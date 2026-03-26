@@ -1,0 +1,15 @@
+
+.actions-container {
+  display: flex;       
+  gap: 8px;            
+  justify-content: flex-start; 
+  align-items: center;
+}
+
+
+::ng-deep .ant-table-pagination.ant-pagination {
+  justify-content: center !important;
+  float: none !important;
+  display: flex !important;
+  width: 100%;
+}
