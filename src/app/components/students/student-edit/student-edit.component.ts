@@ -26,7 +26,7 @@ export class StudentEditComponent implements OnInit {
     this.studentId = this.route.snapshot.paramMap.get('id')!;
 
     this.studentForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-Z ]+$')]),
+      name: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-Ỹà-ỹ\\s]+$')]),
       email: new FormControl('', [Validators.required, Validators.email]),
       address: new FormControl(''),
       phoneNumber: new FormControl('', [Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(11), Validators.required]),
