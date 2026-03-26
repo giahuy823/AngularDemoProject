@@ -57,9 +57,11 @@ export class StudentAddComponent implements OnInit{
         next: (response) => {
           console.log('Student added successfully', response);
           this.msgService.success("Thêm sinh viên thành công!.");  
+          this.Router.navigate(['/students']);
         },
         error: (err) => {
           this.msgService.error('Something wrong', err);
+          
         },
     })
       };
