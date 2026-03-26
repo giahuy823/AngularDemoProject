@@ -1,0 +1,80 @@
+<!-- <div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <h1>Student List</h1>
+        <a routerLink="/students/student-add" class="btn btn-primary">Add Student</a>
+    </div>
+    <table class="table table-striped mt-3">
+  <thead>
+    <tr class="table table-info">
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Address</th>
+      <th scope="col">Phone Number</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let s of studentList">
+      <td>{{ s.name }}</td>
+      <td>{{ s.email }}</td>
+      <td>{{ s.address }}</td>
+      <td>{{ s.phoneNumber }}</td>
+      <td>
+        <a [routerLink]="['/students/student-edit', s.id]" class="btn btn-sm btn-outline-primary">Edit</a>
+        <button (click)="deleteStudent(s.id)" class="btn btn-sm btn-outline-danger">Delete</button>
+      </td>
+    </tr>
+    
+  </tbody>
+</table>
+</div> -->
+
+<div class="container">
+  <h1>Danh sách sinh viên</h1>
+  <button nz-button nzType="primary" routerLink="/students/student-add" class="action-btn mb-4">
+     <span nz-icon nzType="plus-circle" nzTheme="outline"> </span>
+     Add Student 
+  </button>
+
+
+  <nz-table #studentTable [nzData]="studentList" [nzBordered]="true" [nzShowPagination]="true" 
+  [nzPageSize]="2" [nzFooter]="footerTemplate" [nzScroll]="{ x: '800px' }"class="shadow rounded" [nzLoading]="loadingCheck">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Phone Number</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of studentTable.data">
+          <td>{{s.name}}</td>
+          <td>{{s.email}}</td>
+          <td>{{s.address}}</td>
+          <td>{{s.phoneNumber}}</td> 
+       <td class="actions-container">
+          <button nz-button nzType="primary"
+                  [routerLink]="['/students/student-edit', s.id]"
+                  class="action-btn">
+            <span nz-icon nzType="edit"></span>
+              Edit
+          </button>
+
+          <button nz-button nzType="primary" nzDanger
+                  (click)="deleteStudent(s.id)"
+                  class="action-btn">
+            <span nz-icon nzType="delete"></span>
+              Delete
+          </button>
+      </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+
+  <ng-template #footerTemplate>
+  <div style="display: flex; align-items: center; justify-content: center;" > Student table with getall service</div>
+</ng-template>
+</div>
