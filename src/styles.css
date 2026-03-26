@@ -5,7 +5,7 @@ body{
     font-family: Arial, sans-serif;
 }
 
-.anticon {
+/* .anticon {
   display: inline-flex !important;
   align-items: center !important;
   line-height: 1 !important;
@@ -14,4 +14,8 @@ body{
 button[nz-button] {
   display: inline-flex !important;
   align-items: center !important;
+} */
+
+.header {
+    margin: 30px 0;
 }
