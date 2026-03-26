@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/students.model';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { StudentService } from 'src/app/services/student.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-student-add',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./student-add.component.css']
 })
 export class StudentAddComponent implements OnInit{
-  constructor(private studentService: StudentService,private Router:Router) {}
+  constructor(private studentService: StudentService,private Router:Router, private msgService:NzMessageService) {}
   studentForm! : FormGroup;
   ngOnInit(): void {
      this.studentForm = new FormGroup({
@@ -55,12 +56,13 @@ export class StudentAddComponent implements OnInit{
       this.studentService.addStudent(student).subscribe({
         next: (response) => {
           console.log('Student added successfully', response);
-          
-          if(confirm("Thêm học sinh thành công!")){
-             this.Router.navigate(['/students']);
-          }
-        }
-      });
+          this.msgService.success("Thêm sinh viên thành công!.");  
+        },
+        error: (err) => {
+          this.msgService.error('Something wrong', err);
+        },
+    })
+      };
     }
   }
-}
+
