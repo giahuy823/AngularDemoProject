@@ -1,0 +1,58 @@
+<div class="container">
+  <div nz-row nzJustify="center">
+    <div nz-col nzSpan="16">
+      <h1 class="mb-3 mt-3">Edit Student</h1>
+      
+      <form nz-form [formGroup]="studentForm" (ngSubmit)="onSubmit()" nzLayout="vertical">
+        <nz-row [nzGutter]="32">
+          <nz-col nzXs="24" nzMd="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Name</nz-form-label>
+              <nz-form-control [nzErrorTip]="getErrorMessage('name')">
+                <input nz-input formControlName="name" placeholder="Enter name">
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzRequired>Phone number</nz-form-label>
+              <nz-form-control [nzErrorTip]="getErrorMessage('phoneNumber')">
+                <input nz-input formControlName="phoneNumber" placeholder="Enter phone number">
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>Birthday</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="birthday" type="date">
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+
+          <nz-col nzXs="24" nzMd="12">
+            <nz-form-item>
+              <nz-form-label nzRequired>Email</nz-form-label>
+              <nz-form-control [nzErrorTip]="getErrorMessage('email')">
+                <input nz-input formControlName="email" placeholder="Enter email">
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>Address</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="address" placeholder="Enter address">
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+
+        <nz-row class="mt-4">
+          <nz-col nzSpan="24">
+            <button nz-button nzType="primary" nzSize="large" class="action-btn"htmlType="submit" [disabled]="studentForm.invalid">
+              <span nz-icon nzType="save"></span> Save Changes
+            </button>
+          </nz-col>
+        </nz-row>
+      </form>
+    </div>
+  </div>
+</div>
