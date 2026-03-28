@@ -31,14 +31,14 @@
 
 <div class="container">
   <h1>Danh sách sinh viên</h1>
-  <button nz-button nzType="primary" routerLink="/students/student-add" class="action-btn mb-4">
+  <button nz-button nzType="primary" routerLink="/students/student-add" class="action-btn">
      <span nz-icon nzType="plus-circle" nzTheme="outline"> </span>
      Add Student 
   </button>
 
 
   <nz-table #studentTable [nzData]="studentList" [nzBordered]="true" [nzShowPagination]="true" 
-  [nzPageSize]="2" [nzFooter]="footerTemplate" [nzScroll]="{ x: '800px' }"class="shadow rounded" [nzLoading]="loadingCheck">
+  [nzPageSize]="2" [nzFooter]="footerTemplate" class="shadow rounded" [nzLoading]="loadingCheck">
     <thead>
       <tr>
         <th>Name</th>

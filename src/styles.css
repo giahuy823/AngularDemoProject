@@ -19,3 +19,62 @@ button[nz-button] {
 .header {
     margin: 30px 0;
 }
+
+
+
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+@media (max-width: 576px) {
+  .button-group {
+    flex-direction: column;
+  }
+}
+
+
+
+.app-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+nz-content {
+  flex: 1;
+  overflow-y: auto; 
+  display: flex;
+  flex-direction: column;
+}
+
+.inner-content {
+  margin: 24px;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  flex: 1; 
+  height: 100%;
+  min-height: min-content; 
+}
+
+/* Nút bấm Group */
+.button-group {
+  display: flex;
+  gap: 12px; 
+  margin-top: 20px;
+}
+@media (max-width: 576px) {
+  .inner-content {
+    margin: 12px; 
+    padding: 16px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+}

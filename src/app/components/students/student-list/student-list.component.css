@@ -1,15 +1,50 @@
-
-.actions-container {
-  display: flex;       
-  gap: 8px;            
-  justify-content: flex-start; 
-  align-items: center;
-}
-
-
 ::ng-deep .ant-table-pagination.ant-pagination {
   justify-content: center !important;
   float: none !important;
   display: flex !important;
   width: 100%;
+}
+
+
+::ng-deep .ant-table-thead > tr > th {
+  background-color: #007bff !important; 
+  color: #ffffff !important;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap; 
+}
+
+.actions-container {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap; 
+}
+
+
+.action-btn{
+  margin-bottom: 8px;
+}
+
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+
+.shadow-table {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+
+@media (max-width: 576px) {
+  .hide-on-mobile {
+    display: none;
+  }
 }

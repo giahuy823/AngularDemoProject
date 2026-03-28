@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from 'src/app/services/student.service';
 import { Student } from 'src/app/models/students.model';
@@ -19,19 +19,21 @@ export class StudentEditComponent implements OnInit {
     private studentService: StudentService,
     private router: Router,
     private route: ActivatedRoute,
-    private msgService: NzMessageService
+    private msgService: NzMessageService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.studentId = this.route.snapshot.paramMap.get('id')!;
 
-    this.studentForm = new FormGroup({
-      name: new FormControl('', [Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-Ỹà-ỹ\\s]+$')]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      address: new FormControl(''),
-      phoneNumber: new FormControl('', [Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(11), Validators.required]),
-      birthday: new FormControl('')
-    });
+    this.studentForm = this.fb.group({
+      name:['',[Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-Ỹà-ỹ\\s]+$')]],
+      gender:[''],
+      email:['',[Validators.required, Validators.email]],
+      address:[''],
+      phoneNumber: ['', [Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(11), Validators.required]],
+      birthday: ['']
+    })
 
     //   this.studentService.getStudentById(this.studentId).subscribe(student =>{
     //   this.studentForm.patchValue({
@@ -56,6 +58,7 @@ export class StudentEditComponent implements OnInit {
         }
         this.studentForm.patchValue({
           name: student.name,
+          gender: student.gender,
           email: student.email,
           address: student.address,
           phoneNumber: student.phoneNumber,
