@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/students.model';
 import { FormBuilder, FormGroup, FormControl, Validators} from '@angular/forms';
 import { StudentService } from 'src/app/services/student.service';
+import { FormbuilderService } from 'src/app/services/formbuilder.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
+import { FormFromJson } from 'src/app/models/form.model';
 @Component({
   selector: 'app-student-add',
   templateUrl: './student-add.component.html',
@@ -13,62 +15,31 @@ export class StudentAddComponent implements OnInit{
   constructor(private studentService: StudentService,
     private Router:Router, 
     private msgService:NzMessageService,
-    private fb:FormBuilder) {}
-  studentForm! : FormGroup;
+    private fbService:  FormbuilderService) {}
+
+  configRoot!: FormFromJson;
   ngOnInit(): void {
-   this.studentForm = this.fb.group({
-    name:['',[Validators.required, Validators.maxLength(50), Validators.pattern('^[a-zA-ZÀ-Ỹà-ỹ\\s]+$')]],
-    gender:[''],
-    email:['',[Validators.required, Validators.email]],
-    address:[''],
-    phoneNumber: ['', [Validators.pattern('^[0-9]+$'), Validators.minLength(10), Validators.maxLength(11), Validators.required]],
-    birthday: [null]
-   })
+        this.fbService.loadConfig().subscribe((config) => {
+            console.log(config);
+            this.configRoot = config;
+        });
+        
+    }
+
+    handleSubmit(formvalue: any){
+      const student = formvalue as Student;
+      this.studentService.addStudent(student).subscribe({
+          next:() => {
+            this.msgService.success("Added successfully!")
+            this.Router.navigate(['/students'])
+          },
+          error: (err) => {
+             this.msgService.error(err);
+          }
+      })
+    }
+
   }
  
 
-    name(controlName: string) {
-      return this.studentForm.get(controlName);
-    }
-
-    getErrorMessage(controlName: string): string {
-      if (this.name(controlName)?.hasError('required')) {
-        return 'You must enter a value';
-      }
-      if (this.name(controlName)?.hasError('maxlength')) {
-        return  controlName + ` cannot exceed ${this.name(controlName)?.errors?.['maxlength'].requiredLength} characters`;
-      }
-      if (this.name(controlName)?.hasError('minlength')) {
-        return  controlName + ` must be at least ${this.name(controlName)?.errors?.['minlength'].requiredLength} characters`;
-      }
-      if (this.name(controlName)?.hasError('pattern')) {
-        return controlName +' has invalid characters.';
-      }
-      if (this.name(controlName)?.hasError('email')) {
-        return 'Not a valid email';
-      }
-      return '';
-    }
-
-    //Event
-   onSubmit(){
-    if(this.studentForm.valid){
-      const student= this.studentForm.value as Student;
-
-      console.log(student);
-
-      this.studentService.addStudent(student).subscribe({
-        next: (response) => {
-          console.log('Student added successfully', response);
-          this.msgService.success("Thêm sinh viên thành công!.");  
-          this.Router.navigate(['/students']);
-        },
-        error: (err) => {
-          this.msgService.error('Something wrong', err);
-          
-        },
-    })
-      };
-    }
-  }
 

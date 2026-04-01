@@ -1,5 +1,5 @@
 <form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="onSubmit()" nzLayout="vertical">
-  <nz-row [nzGutter]="configRoot.layout.gutter">
+  <nz-row [nzGutter]="configRoot.layout.colSpan">
     <ng-container *ngFor="let field of configRoot.fields">
       <nz-col *ngIf="field.visible" [nzMd]="12" 
         [nzSm]="24" 

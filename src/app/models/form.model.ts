@@ -6,7 +6,7 @@ export interface FormFromJson {
 }
 
 export interface Layout {
-  gutter: number
+  colSpan: number
   columns: number
 }
 

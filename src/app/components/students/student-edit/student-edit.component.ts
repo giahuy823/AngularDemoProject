@@ -91,26 +91,13 @@ export class StudentEditComponent implements OnInit {
       error: (err) => console.log(err)
     });
   }
-
-  // onSubmit() {
-  
-  //     console.log(updatedStudent)
-  //     this.studentService.updateStudent(updatedStudent).subscribe({
-  //       next: (res) => {
-  //         this.msgService.success('Cập nhật học sinh thành công!');
-  //         this.router.navigate(['/students']);
-  //       },
-  //       error: (err) => this.msgService.error('Cập nhật thất bại: ' + err.error)
-  //     });
-  //   }
-
     handleSubmit(formValue: any){
       const UpdatedStudent ={
         id : this.studentId,
         ...formValue,
         birthday: formValue.birthday ? formValue.birthday : null
       }
-      
+
       this.studentService.updateStudent(UpdatedStudent).subscribe({
         next: () => {
           this.msgService.success('Cập nhật học sinh thành công!');
@@ -121,19 +108,4 @@ export class StudentEditComponent implements OnInit {
       })
   }
 
-  // name(controlName: string) {
-  //   return this.studentForm.get(controlName);
-  // }
-
-  // getErrorMessage(controlName: string): string {
-  //   const ctrl = this.name(controlName);
-  //   if (!ctrl) return '';
-  //   if (ctrl.hasError('required')) return 'You must enter a value';
-  //   if (ctrl.hasError('maxlength')) return `${controlName} cannot exceed ${ctrl.errors!['maxlength'].requiredLength} characters`;
-  //   if (ctrl.hasError('minlength')) return `${controlName} must be at least ${ctrl.errors!['minlength'].requiredLength} characters`;
-  //   if (ctrl.hasError('pattern')) return `${controlName} has invalid characters.`;
-  //   if (ctrl.hasError('email')) return 'Not a valid email';
-  //   return '';
-  // }
-  
 }

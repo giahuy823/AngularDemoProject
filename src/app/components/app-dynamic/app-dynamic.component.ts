@@ -22,15 +22,6 @@ export class AppDynamicComponent implements OnInit,OnChanges{
 
     form!: FormGroup;
 
-    // ngOnInit(): void {
-    //   this.form = this.fbservice.buildForm(this.configRoot);
-    //   console.log(this.configRoot);
-    //   console.log(this.form.value)
-    //   if (this.data!= null) {
-    //     this.form.patchValue(this.data);
-    //   }
-    // }
-
     ngOnInit(): void {}
 
     ngOnChanges(changes: SimpleChanges): void {

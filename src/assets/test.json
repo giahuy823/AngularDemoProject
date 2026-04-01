@@ -1,7 +1,7 @@
 {
   "formName": "studentForm",
   "layout": {
-    "gutter": 32,
+    "colSpan": 32,
     "columns": 2
   },
   "fields": [
