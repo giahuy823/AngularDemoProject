@@ -1,0 +1,57 @@
+<form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="onSubmit()" nzLayout="vertical">
+  <nz-row [nzGutter]="configRoot.layout.gutter">
+    <ng-container *ngFor="let field of configRoot.fields">
+      <nz-col *ngIf="field.visible" [nzMd]="12" 
+        [nzSm]="24" 
+        [nzXs]="24">
+        <nz-form-item>
+          <nz-form-label [nzRequired]="field.required">{{field.label}}</nz-form-label>
+          <nz-form-control [nzErrorTip]="getErrorMessage(field.key)">
+            
+            <input *ngIf="field.type === 'input'" nz-input 
+                   [formControlName]="field.key" 
+                   [placeholder]="field.placeholder">
+
+            <input *ngIf="field.type === 'date'" nz-input 
+                   [formControlName]="field.key" 
+                   type="date">
+
+            <nz-select *ngIf="field.type === 'select'"
+                       [formControlName]="field.key"
+                       [nzPlaceHolder]="field.placeholder ?? ''">
+              <nz-option *ngFor="let opt of field.options"
+                         nzCustomContent
+                         [nzValue]="opt.value"
+                         [nzLabel]="opt.label">
+                {{opt.label}} 
+                <span nz-icon [nzType]="opt.icon" [style.color]="opt.color"></span>
+              </nz-option>
+            </nz-select>
+
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+    </ng-container>
+  </nz-row>
+
+  <nz-row class="footer-row">
+    <nz-col [nzMd]="12" 
+        [nzSm]="24" 
+        [nzXs]="24">
+      <div class="form-actions">
+        <button *ngFor="let action of configRoot.actions" 
+                nz-button 
+                [nzType]="action.style"
+                nzSize="large" 
+                class="action-btn"
+                [type]="action.type === 'submit' ? 'submit' : 'button'"
+                [routerLink]="action.type === 'submit' ? null : ''"
+                >
+                
+          <span nz-icon [nzType]="action.icon"></span>
+          {{action.label}}
+        </button>
+      </div>
+    </nz-col>
+  </nz-row>
+</form>

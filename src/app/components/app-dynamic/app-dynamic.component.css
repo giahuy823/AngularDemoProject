@@ -1,0 +1,27 @@
+/* Container bọc các nút */
+.form-actions {
+  display: flex !important;
+  flex-direction: row;       
+  justify-content: flex-start; 
+  flex-wrap: wrap;
+  gap: 12px;                 
+  margin-top: 16px;
+  padding-bottom: 20px;
+}
+
+/* 
+.action-btn {
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;           
+  border-radius: 6px;         
+  transition: all 0.3s;
+} */
+
+
+
+
+.footer-row {
+  border-top: 1px solid #f0f0f0; 
+  padding-top: 16px;
+}

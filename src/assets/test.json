@@ -1,0 +1,98 @@
+{
+  "formName": "studentForm",
+  "layout": {
+    "gutter": 32,
+    "columns": 2
+  },
+  "fields": [
+    {
+      "key": "name",
+      "label": "Name",
+      "type": "input",
+      "visible": true,
+      "required": true,
+      "placeholder": "Enter name",
+      "validators": [
+        { "type": "required" },
+        { "type": "maxLength", "value": 50 },
+        { "type": "pattern", "value": "^[a-zA-ZÀ-Ỹà-ỹ\\s]+$" }
+      ]
+    },
+    {
+      "key": "phoneNumber",
+      "label": "Phone number",
+      "type": "input",
+      "visible": true,
+      "required": true,
+      "placeholder": "Enter phone number",
+      "validators": [
+        { "type": "required" },
+        { "type": "pattern", "value": "^[0-9]+$" },
+        { "type": "minLength", "value": 10 },
+        { "type": "maxLength", "value": 11 }
+      ]
+    },
+    {
+      "key": "birthday",
+      "label": "Birthday",
+      "type": "date",
+      "visible": true
+    },
+    {
+      "key": "gender",
+      "label": "Gender",
+      "type": "select",
+      "visible": true,
+      "placeholder": "Select gender",
+      "options": [
+        {
+          "label": "Male",
+          "value": "Nam",
+          "icon": "man",
+          "color": "#1890ff"
+        },
+        {
+          "label": "Female",
+          "value": "Nữ",
+          "icon": "woman",
+          "color": "#eb2f96"
+        }
+      ]
+    },
+    {
+      "key": "email",
+      "label": "Email",
+      "type": "input",
+      "visible": true,
+      "required": true,
+      "placeholder": "Enter email",
+      "validators": [
+        { "type": "required" },
+        { "type": "email" }
+      ]
+    },
+    {
+      "key": "address",
+      "label": "Address",
+      "type": "input",
+      "visible": true,
+      "placeholder": "Enter address",
+      "colSpan": 12
+    }
+  ],
+  "actions": [
+    {
+      "type": "submit",
+      "label": "Save Changes",
+      "icon": "save",
+      "style": "primary"
+    },
+    {
+      "type": "navigate",
+      "label": "Back to List",
+      "icon": "arrow-left",
+      "route": "/students",
+      "style": "default"
+    }
+  ]
+}

@@ -15,15 +15,19 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
+import { HttpClientModule } from '@angular/common/http';
+import { AppDynamicComponent } from '../app-dynamic/app-dynamic.component';
+import { DynamicformModule } from '../app-dynamic/dynamicform.module';
 @NgModule({
   declarations: [
     StudentAddComponent,
     StudentListComponent,
-    StudentEditComponent
+    StudentEditComponent,
   ],
   imports: [
     CommonModule,
     StudentRoutingModule,
+    DynamicformModule,
     ReactiveFormsModule,
     NzButtonModule,
     NzInputModule,

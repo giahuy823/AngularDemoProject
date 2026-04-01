@@ -1,4 +1,4 @@
-<div class="container">
+<!-- <div class="container">
   <div nz-row nzJustify="center">
     <div nz-col nzSpan="16">
       <h1 class="header">Edit Student</h1>
@@ -12,7 +12,6 @@
                 <input nz-input formControlName="name" placeholder="Enter name">
               </nz-form-control>
             </nz-form-item>
-
             <nz-form-item>
               <nz-form-label nzRequired>Phone number</nz-form-label>
               <nz-form-control [nzErrorTip]="getErrorMessage('phoneNumber')">
@@ -35,12 +34,12 @@
                 <nz-form-control> 
                   <nz-select formControlName="gender" nzPlaceHolder="Select gender">
                       <nz-option nzCustomContent nzValue="Nam" nzLabel="Male">
-                        <span nz-icon nzType="man" nzTheme="outline" style="color: #1890ff;"></span>
+                        <span nz-icon nzType="man" style="color: #1890ff;"></span>
                         Male
                       </nz-option>
 
                       <nz-option nzCustomContent nzValue="Nữ" nzLabel="Female">
-                        <span nz-icon nzType="woman" nzTheme="outline" style="color: #eb2f96;"></span>
+                        <span nz-icon nzType="woman" style="color: #eb2f96;"></span>
                         Female
                       </nz-option>
                   </nz-select>
@@ -79,4 +78,10 @@
       </form>
     </div>
   </div>
-</div>
+</div> -->
+<h1 class="header">Edit Student</h1>
+<app-dynamic
+[configRoot]="configRoot"
+[data]="studentData"
+(formSubmit)="handleSubmit($event)"
+></app-dynamic>

@@ -18,7 +18,7 @@ export class StudentListComponent {
     })
   }
   deleteStudent(id: string) {
-    if (confirm('Are you sure you want to delete this student?')) {
+    if (confirm('Xóa học sinh này?')) {
       this.studentService.deleteStudent(id).subscribe(
       { next: (res)=>
       {
