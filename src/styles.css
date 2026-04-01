@@ -64,7 +64,7 @@ nz-content {
   min-height: min-content; 
 }
 
-/* Nút bấm Group */
+
 .button-group {
   display: flex;
   gap: 12px; 

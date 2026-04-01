@@ -16,7 +16,7 @@ const routes: Routes = [
 // }
   {
     path: '',
-    redirectTo: 'students', // khi vào / → redirect tới /students
+    redirectTo: 'students', 
     pathMatch: 'full'
   },
  {
