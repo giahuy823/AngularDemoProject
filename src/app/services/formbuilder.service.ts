@@ -8,11 +8,16 @@ import { FormGroup } from '@angular/forms';
   providedIn: 'root'
 })
 export class FormbuilderService {
-
+  privateUrl = 'https://localhost:44357/api/app'
   constructor(private http: HttpClient, private fb: FormBuilder) { }
 
   loadConfig(): Observable<FormFromJson> {
     return this.http.get<FormFromJson>('assets/test.json');
+  }
+
+  loadConFigFromDb(module: string, menu: string, form: string): Observable<FormFromJson>{
+    console.log(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`);
+    return this.http.get<FormFromJson>(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`)
   }
 
   buildForm(config: FormFromJson): FormGroup {

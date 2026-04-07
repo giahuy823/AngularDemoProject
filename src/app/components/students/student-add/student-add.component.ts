@@ -8,7 +8,12 @@ import { Router } from '@angular/router';
 import { FormFromJson } from 'src/app/models/form.model';
 @Component({
   selector: 'app-student-add',
-  templateUrl: './student-add.component.html',
+   template: `
+    <app-dynamic
+      [configRoot]="configRoot"
+      (formSubmit)="handleSubmit($event)"
+    ></app-dynamic>
+  `,
   styleUrls: ['./student-add.component.css']
 })
 export class StudentAddComponent implements OnInit{
@@ -19,15 +24,21 @@ export class StudentAddComponent implements OnInit{
 
   configRoot!: FormFromJson;
   ngOnInit(): void {
-        this.fbService.loadConfig().subscribe((config) => {
+        this.fbService.loadConFigFromDb('student','management','create').subscribe((config) => {
             console.log(config);
             this.configRoot = config;
         });
         
     }
 
-    handleSubmit(formvalue: any){
-      const student = formvalue as Student;
+    handleSubmit(formValue: any){
+       const student ={
+        ...formValue,
+         birthday: formValue.birthday 
+      ? new Date(formValue.birthday).toISOString()
+      : null
+      } as Student;
+      console.log(student);
       this.studentService.addStudent(student).subscribe({
           next:() => {
             this.msgService.success("Added successfully!")

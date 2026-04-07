@@ -9,7 +9,11 @@ import { FormbuilderService } from 'src/app/services/formbuilder.service';
 
 @Component({
   selector: 'app-student-edit',
-  templateUrl: './student-edit.component.html',
+  template:`<app-dynamic
+  [configRoot]="configRoot"
+  [data]="studentData"
+  (formSubmit)="handleSubmit($event)"
+  ></app-dynamic>`,
   styleUrls: ['./student-edit.component.css']
 })
 export class StudentEditComponent implements OnInit {
@@ -31,7 +35,7 @@ export class StudentEditComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.formBuilderService.loadConfig().subscribe(config=>{
+    this.formBuilderService.loadConFigFromDb('student','management','edit').subscribe(config=>{
         this.configRoot = config;
         console.log(this.configRoot)
         // this.studentForm2 = this.formBuilderService.buildForm(this.configRoot);
@@ -101,6 +105,7 @@ export class StudentEditComponent implements OnInit {
       this.studentService.updateStudent(UpdatedStudent).subscribe({
         next: () => {
           this.msgService.success('Cập nhật học sinh thành công!');
+          this.router.navigate(['/students']);
         },
         error: (err) =>{
           this.msgService.error("Something went wrong!" + err);       

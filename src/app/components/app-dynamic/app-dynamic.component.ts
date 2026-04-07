@@ -29,11 +29,15 @@ export class AppDynamicComponent implements OnInit,OnChanges{
       if (changes['configRoot'] && this.configRoot) {
         console.log('co thay doi')
         this.form = this.fbservice.buildForm(this.configRoot);
-      }
-       if (changes['data'] && this.data) {
-          console.log('co thay doi 2')
+        if (this.data) {
+          console.log('co thay doi 1 ve data' )
           this.form.patchValue(this.data);
+        }
       }
+       if (changes['data'] && this.data && this.form) {
+          console.log('co thay doi 2 ve data');
+          this.form.patchValue(this.data);
+       }
     }
 
     onSubmit() {
