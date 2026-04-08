@@ -15,6 +15,7 @@ export class FormbuilderService {
     return this.http.get<FormFromJson>('assets/test.json');
   }
 
+  /* Build FormGroup with validators*/
   buildForm(config: FormFromJson): FormGroup {
     const group: any = {};
 
