@@ -14,7 +14,7 @@ import { FormbuilderService } from 'src/app/services/formbuilder.service';
   [data]="studentData"
   (formSubmit)="handleSubmit($event)"
   ></app-dynamic>`,
-  styleUrls: ['./student-edit.component.css']
+
 })
 export class StudentEditComponent implements OnInit {
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/models/students.model';
-import { FormBuilder, FormGroup, FormControl, Validators} from '@angular/forms';
 import { StudentService } from 'src/app/services/student.service';
 import { FormbuilderService } from 'src/app/services/formbuilder.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -13,8 +12,7 @@ import { FormFromJson } from 'src/app/models/form.model';
       [configRoot]="configRoot"
       (formSubmit)="handleSubmit($event)"
     ></app-dynamic>
-  `,
-  styleUrls: ['./student-add.component.css']
+  `
 })
 export class StudentAddComponent implements OnInit{
   constructor(private studentService: StudentService,

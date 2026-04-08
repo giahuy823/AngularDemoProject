@@ -23,6 +23,7 @@ import { DynamicformModule } from '../app-dynamic/dynamicform.module';
     StudentAddComponent,
     StudentListComponent,
     StudentEditComponent,
+    
   ],
   imports: [
     CommonModule,
