@@ -1,5 +1,5 @@
 export interface FormFromJson {
-  formName: string
+  title: string
   layout: Layout
   fields: Field[]
   actions: Action[]

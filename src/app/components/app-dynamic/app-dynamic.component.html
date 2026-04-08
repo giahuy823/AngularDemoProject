@@ -1,3 +1,4 @@
+<h1 class="header">{{ configRoot.title }}</h1>
 <form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="onSubmit()" nzLayout="vertical">
   <nz-row [nzGutter]="configRoot.layout.colSpan">
     <ng-container *ngFor="let field of configRoot.fields">
