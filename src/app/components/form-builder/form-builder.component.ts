@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-
+import { FormbuilderService } from 'src/app/services/formbuilder.service';
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
@@ -40,11 +40,13 @@ export class FormBuilderComponent implements OnInit {
   constructor(
     private http: HttpClient, 
     private fb: FormBuilder,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private formbuilderService: FormbuilderService
   ) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group({
+    this.form = this.fb.group(
+      {
       title: ['', [Validators.required]],
       layout: this.fb.group({
         colSpan: [24],
@@ -140,11 +142,19 @@ export class FormBuilderComponent implements OnInit {
     const payload = {
       moduleCode: 'student',
       menuCode: 'management',
-      formCode: this.form.value.formName,
+      formCode: this.form.value.title,
       configJson: JSON.stringify(this.form.value)
     };
-    console.log(this.form.value);
+    console.log(payload);
 
-   
+    this.formbuilderService.saveConfigToDb(payload).subscribe({
+      next: () => {
+        this.message.success('Cấu hình đã được lưu thành công!');
+      },
+      error: () => {
+        this.message.error('Có lỗi xảy ra khi lưu cấu hình!');
+      }
+    }
+    );
   }
 }

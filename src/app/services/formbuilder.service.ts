@@ -20,6 +20,10 @@ export class FormbuilderService {
     return this.http.get<FormFromJson>(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`)
   }
 
+  saveConfigToDb(payload: any): Observable<any> {
+    return this.http.post(`${this.privateUrl}`, payload);
+  }
+
   buildForm(config: FormFromJson): FormGroup {
     const group: any = {};
 
