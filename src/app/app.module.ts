@@ -31,7 +31,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzTableModule } from 'ng-zorro-antd/table';
-
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 registerLocaleData(en);
 
@@ -66,8 +66,8 @@ registerLocaleData(en);
     NzCollapseModule,
     NzTableModule,
     NzIconModule,
-    NzMessageModule
-
+    NzMessageModule,
+    NzSpaceModule
 ],
   providers: [
     { provide: NZ_I18N, useValue: en_US }

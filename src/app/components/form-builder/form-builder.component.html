@@ -108,18 +108,37 @@
                       </div>
                     </div>
                   </div>
+
+                  <div formArrayName="options">
+                    <div *ngFor="let option of getOptions(i).controls; let k = index" [formGroupName]="k">
+                      <div nz-row [nzGutter]="8" nzAlign="middle">
+                        <nz-col [nzSpan]="10">
+                          <input nz-input formControlName="label" placeholder="Nhãn Option">
+                        </nz-col>
+                        <nz-col [nzSpan]="10">
+                          <input nz-input formControlName="value" placeholder="Giá trị Option">
+                        </nz-col>
+                        <nz-col [nzSpan]="4">
+                          <button nz-button nzType="text" nzDanger type="button" (click)="removeOption(i, k)">
+                            <i nz-icon nzType="delete"></i>
+                          </button>
+                        </nz-col>
+                      </div>
+                    </div>
+                  </div>
                   
                   <button nz-button nzType="link" nzSize="small" type="button" (click)="addValidator(i,'required')">
                     <i nz-icon nzType="plus"></i> Thêm ràng buộc
+                  </button>
+                  <button *ngIf ="field.get('type')?.value === 'select'" nz-button nzType="link" type="button" (click)="addOption(i)">
+                    <i nz-icon nzType="plus"></i> Thêm option 
                   </button>
                 </div>
 
                 <ng-template #extraTpl>
                    <i nz-icon nzType="delete" class="delete-icon" 
                       style="color: #ff4d4f; cursor: pointer; font-size: 16px;" 
-                      (nzOnConfirm)="removeField(i)"
-                      nz-popconfirm 
-                      nzPopconfirmTitle="Bạn có chắc muốn xóa field này?"></i>
+                      (click)="removeField(i)"></i>
                 </ng-template>
               </nz-collapse-panel>
             </nz-collapse>

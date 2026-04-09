@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-form-builder',
@@ -72,6 +71,7 @@ export class FormBuilderComponent implements OnInit {
       options: this.fb.array([])
     }));
   }
+
   removeField(index: number) {
     this.fields.removeAt(index);
   }
@@ -94,10 +94,28 @@ export class FormBuilderComponent implements OnInit {
     const validators = this.getValidators(fieldIndex);
     validators.removeAt(validatorIndex);
   }
+
   hasValidatorValue(type: string): boolean {
     const found = this.validatorTypes.find(v => v.value === type);
     return !!found?.hasValue;
   }
+  
+  addOption(fieldIndex: number) {
+    const options = this.fields.at(fieldIndex).get('options') as FormArray;
+    options.push(this.fb.group({
+      label: [''], value: ['']
+    }));
+  }
+
+  getOptions(fieldIndex: number): FormArray {
+    return this.fields.at(fieldIndex).get('options') as FormArray;
+  }
+
+  removeOption(fieldIndex: number, optionIndex: number) {
+    const options = this.fields.at(fieldIndex).get('options') as FormArray;
+    options.removeAt(optionIndex);
+  }
+
   addAction() {
     this.actions.push(this.fb.group({
       type: ['submit'], 
