@@ -47,7 +47,6 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   constructor(
-
     private fb: FormBuilder,
     private message: NzMessageService,
     private formbuilderService: FormbuilderService
@@ -75,6 +74,7 @@ export class FormBuilderComponent implements OnInit {
   getValidators(groupIndex: number, fieldIndex: number): FormArray {
     return this.fields(groupIndex).at(fieldIndex).get('validators') as FormArray;
   }
+
   get actions() { return this.form.get('actions') as FormArray; }
 
   addGroup() {
@@ -83,6 +83,7 @@ export class FormBuilderComponent implements OnInit {
       fields: this.fb.array([])
     }));
   }
+
   removeGroup(index: number) {
     this.groups.removeAt(index);
   }
