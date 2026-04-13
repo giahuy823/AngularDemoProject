@@ -34,97 +34,122 @@
       
       <nz-tab nzTitle="Danh sách Fields">
         <div style="background: #fff; padding: 20px; border-radius: 0 0 8px 8px;">
-          <button nz-button nzType="dashed" nzBlock type="button" (click)="addField()" style="margin-bottom: 20px; height: 45px;">
-            <i nz-icon nzType="plus"></i> Thêm Field mới
-          </button>
+          
+          <!-- Nút thêm nhóm -->
+          <div style="margin-bottom: 20px; display: flex; gap: 8px;">
+            <button nz-button nzType="dashed" type="button" (click)="addGroup()">
+              <i nz-icon nzType="plus"></i> Thêm nhóm
+            </button>
+          </div>
 
-          <div formArrayName="fields">
-            <nz-collapse nzAccordion nzGhost>
-              <nz-collapse-panel 
-                *ngFor="let field of fields.controls; let i = index" 
-                [formGroupName]="i"
-                [nzHeader]="panelHeader"
-                [nzActive]="true"
-                [nzExtra]="extraTpl"
-                style="background: #fafafa; border: 1px solid #d9d9d9; margin-bottom: 16px; border-radius: 4px;"
-              >
-                <ng-template #panelHeader>
-                  <span style="font-weight: 600; color: #1890ff;">
-                    #{{ i + 1 }}: {{ field.get('label')?.value || 'Field chưa có nhãn' }} 
-                    <small style="color: #999; font-weight: normal; margin-left: 8px;">{{ field.get('key')?.value }}</small>
-                  </span>
-                </ng-template>
-
-                <div nz-row [nzGutter]="16">
-                  <div nz-col [nzSpan]="6">
-                    <nz-form-item>
-                      <nz-form-label>Mã (Key)</nz-form-label>
-                      <input nz-input formControlName="key" placeholder="Ví dụ: email">
-                    </nz-form-item>
-                  </div>
-                  <div nz-col [nzSpan]="6">
-                    <nz-form-item>
-                      <nz-form-label>Nhãn (Label)</nz-form-label>
-                      <input nz-input formControlName="label" placeholder="Ví dụ: Địa chỉ Email">
-                    </nz-form-item>
-                  </div>
-                  <div nz-col [nzSpan]="6">
-                    <nz-form-item>
-                      <nz-form-label>Loại Input</nz-form-label>
-                      <nz-select formControlName="type" style="width: 100%">
-                        <nz-option nzValue="input" nzLabel="Input Text"></nz-option>
-                        <nz-option nzValue="select" nzLabel="Dropdown Select"></nz-option>
-                        <nz-option nzValue="date" nzLabel="Date Picker"></nz-option>
-                      </nz-select>
-                    </nz-form-item>
-                  </div>
-                  <div nz-col [nzSpan]="6">
-                    <nz-form-item>
-                      <nz-form-label>Gợi ý (Placeholder)</nz-form-label>
-                      <input nz-input formControlName="placeholder" placeholder="Nhập vào...">
-                    </nz-form-item>
-                  </div>
-                  <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
-                    <nz-form-item>
-                      <nz-form-label>Nguồn dữ liệu (DataSource)</nz-form-label>
-                      <nz-select formControlName="dataSource" style="width: 100%">
-                        <nz-option *ngFor="let ds of dataSources" [nzValue]="ds.value" [nzLabel]="ds.label"></nz-option>
-                      </nz-select>
-                    </nz-form-item>
-                  </div>
-                  <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
-                  <nz-form-item>
-                    <nz-form-label>Phụ thuộc (Parent)</nz-form-label>
-                    <nz-select formControlName="parentKey" nzAllowClear nzPlaceHolder="Chọn field cha">
-                      <nz-option 
-                        *ngFor="let f of fields.controls"
-                        [nzValue]="f.get('key')?.value"
-                        [nzLabel]="f.get('label')?.value || f.get('key')?.value"
-                        [nzDisabled]="f === field">
-                      </nz-option>
-                    </nz-select>
-                  </nz-form-item>
+          <!-- Danh sách các nhóm -->
+          <div formArrayName="groups">
+            <div *ngFor="let group of groups.controls; let gIdx = index" 
+                 [formGroupName]="gIdx" 
+                 style="margin-bottom: 24px; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; background: #fefefe;">
+              
+              <!-- Header của nhóm -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div style="width: 70%;">
+                  <input nz-input formControlName="title" placeholder="Tiêu đề nhóm (không bắt buộc)" style="font-weight: 500;" />
                 </div>
+                <button nz-button nzType="text" nzDanger (click)="removeGroup(gIdx)">
+                  <i nz-icon nzType="delete"></i> Xóa nhóm
+                </button>
+              </div>
 
-                </div>
+              <!-- Danh sách fields trong nhóm -->
+              <div formArrayName="fields">
+                <button nz-button nzType="dashed" nzBlock type="button" (click)="addField(gIdx)" style="margin-bottom: 20px; height: 38px;">
+                  <i nz-icon nzType="plus"></i> Thêm Field vào nhóm
+                </button>
 
+                <nz-collapse nzAccordion nzGhost>
+                  <nz-collapse-panel 
+                    *ngFor="let field of fields(gIdx).controls; let fIdx = index" 
+                    [formGroupName]="fIdx"
+                    [nzHeader]="panelHeader"
+                    [nzActive]="true"
+                    [nzExtra]="extraTpl"
+                    style="background: #fafafa; border: 1px solid #d9d9d9; margin-bottom: 16px; border-radius: 4px;"
+                  >
+                    <ng-template #panelHeader>
+                      <span style="font-weight: 600; color: #1890ff;">
+                        #{{ fIdx + 1 }}: {{ field.get('label')?.value || 'Field chưa có nhãn' }} 
+                        <small style="color: #999; font-weight: normal; margin-left: 8px;">{{ field.get('key')?.value }}</small>
+                      </span>
+                    </ng-template>
+
+                    <div nz-row [nzGutter]="16">
+                      <div nz-col [nzSpan]="6">
+                        <nz-form-item>
+                          <nz-form-label>Mã (Key)</nz-form-label>
+                          <input nz-input formControlName="key" placeholder="Ví dụ: email">
+                        </nz-form-item>
+                      </div>
+                      <div nz-col [nzSpan]="6">
+                        <nz-form-item>
+                          <nz-form-label>Nhãn (Label)</nz-form-label>
+                          <input nz-input formControlName="label" placeholder="Ví dụ: Địa chỉ Email">
+                        </nz-form-item>
+                      </div>
+                      <div nz-col [nzSpan]="6">
+                        <nz-form-item>
+                          <nz-form-label>Loại Input</nz-form-label>
+                          <nz-select formControlName="type" style="width: 100%">
+                            <nz-option nzValue="input" nzLabel="Input Text"></nz-option>
+                            <nz-option nzValue="select" nzLabel="Dropdown Select"></nz-option>
+                            <nz-option nzValue="date" nzLabel="Date Picker"></nz-option>
+                          </nz-select>
+                        </nz-form-item>
+                      </div>
+                      <div nz-col [nzSpan]="6">
+                        <nz-form-item>
+                          <nz-form-label>Gợi ý (Placeholder)</nz-form-label>
+                          <input nz-input formControlName="placeholder" placeholder="Nhập vào...">
+                        </nz-form-item>
+                      </div>
+                      <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                        <nz-form-item>
+                          <nz-form-label>Nguồn dữ liệu (DataSource)</nz-form-label>
+                          <nz-select formControlName="dataSource" style="width: 100%">
+                            <nz-option *ngFor="let ds of dataSources" [nzValue]="ds.value" [nzLabel]="ds.label"></nz-option>
+                          </nz-select>
+                        </nz-form-item>
+                      </div>
+                      <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                        <nz-form-item>
+                          <nz-form-label>Phụ thuộc (Parent)</nz-form-label>
+                          <nz-select formControlName="parentKey" nzAllowClear nzPlaceHolder="Chọn field cha">
+                            <nz-option 
+                              *ngFor="let f of fields(gIdx).controls"
+                              [nzValue]="f.get('key')?.value"
+                              [nzLabel]="f.get('label')?.value || f.get('key')?.value"
+                              [nzDisabled]="f === field">
+                            </nz-option>
+                          </nz-select>
+                        </nz-form-item>
+                      </div>
+                    </div>
 
                 <div style="margin-top: 10px; padding: 12px; background: #fff; border-radius: 4px; border: 1px dashed #d9d9d9;">
                   <div style="margin-bottom: 8px; font-weight: 500; font-size: 13px;">Ràng buộc dữ liệu (Validators):</div>
                   
+                  <!-- Danh sách validators hiện có -->
                   <div formArrayName="validators">
-                    <div *ngFor="let v of getValidators(i).controls; let j = index" [formGroupName]="j" style="margin-bottom: 8px;">
+                    <div *ngFor="let v of getValidators(gIdx, fIdx).controls; let j = index" [formGroupName]="j" style="margin-bottom: 8px;">
                       <div nz-row [nzGutter]="8" nzAlign="middle">
-                        <nz-col>
-                          <nz-select formControlName="type" nzPlaceHolder="Chọn loại">
+                        <nz-col [nzSpan]="8">
+                          <nz-select formControlName="type" nzPlaceHolder="Chọn loại" style="width: 100%">
                             <nz-option *ngFor="let item of validatorTypes" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
                           </nz-select>
                         </nz-col>
-                        <nz-col [nzSpan]="12">
+                        <nz-col [nzSpan]="10">
                           <input *ngIf="hasValidatorValue(v.get('type')?.value)" nz-input formControlName="value" placeholder="Giá trị/Tham số">
+                          <span *ngIf="!hasValidatorValue(v.get('type')?.value)" style="color: #ccc; font-style: italic;">(không cần tham số)</span>
                         </nz-col>
                         <nz-col [nzSpan]="4">
-                          <button nz-button nzType="text" nzDanger type="button" (click)="removeValidator(i, j)">
+                          <button nz-button nzType="text" nzDanger type="button" (click)="removeValidator(gIdx, fIdx, j)">
                             <i nz-icon nzType="delete"></i>
                           </button>
                         </nz-col>
@@ -132,8 +157,9 @@
                     </div>
                   </div>
 
+                  <!-- Options cho select -->
                   <div formArrayName="options">
-                    <div *ngFor="let option of getOptions(i).controls; let k = index" [formGroupName]="k">
+                    <div *ngFor="let option of getOptions(gIdx, fIdx).controls; let k = index" [formGroupName]="k" style="margin-bottom: 8px;">
                       <div nz-row [nzGutter]="8" nzAlign="middle">
                         <nz-col [nzSpan]="10">
                           <input nz-input formControlName="label" placeholder="Nhãn Option">
@@ -142,7 +168,7 @@
                           <input nz-input formControlName="value" placeholder="Giá trị Option">
                         </nz-col>
                         <nz-col [nzSpan]="4">
-                          <button nz-button nzType="text" nzDanger type="button" (click)="removeOption(i, k)">
+                          <button nz-button nzType="text" nzDanger type="button" (click)="removeOption(gIdx, fIdx, k)">
                             <i nz-icon nzType="delete"></i>
                           </button>
                         </nz-col>
@@ -150,21 +176,24 @@
                     </div>
                   </div>
                   
-                  <button nz-button nzType="link" nzSize="small" type="button" (click)="addValidator(i,'required')">
-                    <i nz-icon nzType="plus"></i> Thêm ràng buộc
+                  <button nz-button nzType="link" nzSize="small" type="button" (click)="addValidator(gIdx, fIdx, 'required')">
+                    <i nz-icon nzType="plus"></i> Thêm ràng buộc (Required)
                   </button>
-                  <button *ngIf ="field.get('type')?.value === 'select'" nz-button nzType="link" type="button" (click)="addOption(i)">
-                    <i nz-icon nzType="plus"></i> Thêm option 
+                  
+                  <button *ngIf="field.get('type')?.value === 'select'" nz-button nzType="link" type="button" (click)="addOption(gIdx, fIdx)">
+                    <i nz-icon nzType="plus"></i> Thêm option cho Select
                   </button>
                 </div>
 
-                <ng-template #extraTpl>
-                   <i nz-icon nzType="delete" class="delete-icon" 
-                      style="color: #ff4d4f; cursor: pointer; font-size: 16px;" 
-                      (click)="removeField(i)"></i>
-                </ng-template>
-              </nz-collapse-panel>
-            </nz-collapse>
+                    <ng-template #extraTpl>
+                      <i nz-icon nzType="delete" class="delete-icon" 
+                         style="color: #ff4d4f; cursor: pointer; font-size: 16px;" 
+                         (click)="removeField(gIdx, fIdx)"></i>
+                    </ng-template>
+                  </nz-collapse-panel>
+                </nz-collapse>
+              </div>
+            </div>
           </div>
         </div>
       </nz-tab>
@@ -222,9 +251,9 @@
   </form>
 </div>
 
-<div style="margin-top: 8px;">
-    <h3>Cấu hình JSON:</h3>
-    <pre style="background: #f5f5f5; padding: 16px; border-radius: 4px; max-height: 400px; overflow: auto;">
+<div style="margin-top: 8px; padding: 0 24px;">
+  <h3>Cấu hình JSON:</h3>
+  <pre style="background: #f5f5f5; padding: 16px; border-radius: 4px; max-height: 400px; overflow: auto;">
     {{ form.value | json }}
-    </pre>
+  </pre>
 </div>

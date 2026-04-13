@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { FormbuilderService } from 'src/app/services/formbuilder.service';
+import { group } from '@angular/animations';
+import { NzInputGroupSlotComponent } from 'ng-zorro-antd/input';
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
@@ -45,7 +47,7 @@ export class FormBuilderComponent implements OnInit {
   ];
 
   constructor(
-    private http: HttpClient, 
+
     private fb: FormBuilder,
     private message: NzMessageService,
     private formbuilderService: FormbuilderService
@@ -59,21 +61,34 @@ export class FormBuilderComponent implements OnInit {
         colSpan: [24],
         columns: [2]
       }),
-      fields: this.fb.array([]),
+      groups: this.fb.array([]),
       actions: this.fb.array([])
     });
   }
 
-  get fields() { return this.form.get('fields') as FormArray; }
+  get groups() { return this.form.get('groups') as FormArray; }
 
-  getValidators(fieldIndex: number): FormArray {
-    return this.fields.at(fieldIndex).get('validators') as FormArray;
+  fields(groupIndex: number): FormArray {
+    return this.groups.at(groupIndex).get('fields') as FormArray;
+  }
+
+  getValidators(groupIndex: number, fieldIndex: number): FormArray {
+    return this.fields(groupIndex).at(fieldIndex).get('validators') as FormArray;
   }
   get actions() { return this.form.get('actions') as FormArray; }
 
+  addGroup() {
+    this.groups.push(this.fb.group({
+      title: [''],
+      fields: this.fb.array([])
+    }));
+  }
+  removeGroup(index: number) {
+    this.groups.removeAt(index);
+  }
 
-  addField() {
-    this.fields.push(this.fb.group({
+  addField(groupIndex: number) {
+    this.fields(groupIndex).push(this.fb.group({
       key: [''], label: [''], type: ['input'], visible: [true],
       placeholder: [''],
       dataSource: [''],
@@ -83,12 +98,12 @@ export class FormBuilderComponent implements OnInit {
     }));
   }
 
-  removeField(index: number) {
-    this.fields.removeAt(index);
+  removeField(groupIndex: number, index: number) {
+    this.fields(groupIndex).removeAt(index);
   }
 
-  addValidator(fieldIndex: number, validatorType: string) {
-    const validators = this.getValidators(fieldIndex);
+  addValidator(groupIndex: number, fieldIndex: number, validatorType: string) {
+    const validators = this.getValidators(groupIndex, fieldIndex);
 
     const hasValue = ['minLength', 'maxLength', 'min', 'max', 'pattern']
       .includes(validatorType);
@@ -102,8 +117,8 @@ export class FormBuilderComponent implements OnInit {
 
   }
 
-  removeValidator(fieldIndex: number, validatorIndex: number) {
-    const validators = this.getValidators(fieldIndex);
+  removeValidator(groupIndex: number, fieldIndex: number, validatorIndex: number) {
+    const validators = this.getValidators(groupIndex, fieldIndex);
     validators.removeAt(validatorIndex);
   
   }
@@ -113,19 +128,19 @@ export class FormBuilderComponent implements OnInit {
     return !!found?.hasValue;
   }
   
-  addOption(fieldIndex: number) {
-    const options = this.fields.at(fieldIndex).get('options') as FormArray;
+  addOption(groupIndex: number, fieldIndex: number) {
+    const options = this.fields(groupIndex).at(fieldIndex).get('options') as FormArray;
     options.push(this.fb.group({
       label: [''], value: ['']
     }));
   }
 
-  getOptions(fieldIndex: number): FormArray {
-    return this.fields.at(fieldIndex).get('options') as FormArray;
+  getOptions(groupIndex: number, fieldIndex: number): FormArray {
+    return this.fields(groupIndex).at(fieldIndex).get('options') as FormArray;
   }
 
-  removeOption(fieldIndex: number, optionIndex: number) {
-    const options = this.fields.at(fieldIndex).get('options') as FormArray;
+  removeOption(groupIndex: number, fieldIndex: number, optionIndex: number) {
+    const options = this.fields(groupIndex).at(fieldIndex).get('options') as FormArray;
     options.removeAt(optionIndex);
   }
 
