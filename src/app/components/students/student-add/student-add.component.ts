@@ -22,7 +22,7 @@ export class StudentAddComponent implements OnInit{
 
   configRoot!: FormFromJson;
   ngOnInit(): void {
-        this.fbService.loadConFigFromDb('student','management','create').subscribe((config) => {
+        this.fbService.loadConFigFromDb('student','management','Dropdown select').subscribe((config) => {
             console.log(config);
             this.configRoot = config;
         });

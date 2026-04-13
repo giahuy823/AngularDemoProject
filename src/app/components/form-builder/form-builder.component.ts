@@ -37,6 +37,13 @@ export class FormBuilderComponent implements OnInit {
     { label: 'Pattern (Regex)', value: 'pattern', hasValue: true }
   ];
 
+  dataSources = [
+  { label: 'Không (Nhập tay)', value: '' },
+  { label: 'Tỉnh/Thành (Provinces)', value: 'provinces' },
+  { label: 'Quận/Huyện (Districts)', value: 'districts' },
+  { label: 'Phường/Xã (Wards)', value: 'wards' }
+  ];
+
   constructor(
     private http: HttpClient, 
     private fb: FormBuilder,
@@ -68,7 +75,9 @@ export class FormBuilderComponent implements OnInit {
   addField() {
     this.fields.push(this.fb.group({
       key: [''], label: [''], type: ['input'], visible: [true],
-      required: [false], placeholder: [''],
+      placeholder: [''],
+      dataSource: [''],
+      parentKey: [''],
       validators: this.fb.array([]),
       options: this.fb.array([])
     }));
@@ -90,11 +99,13 @@ export class FormBuilderComponent implements OnInit {
         value: [hasValue ? '' : null] 
       })
     );
+
   }
 
   removeValidator(fieldIndex: number, validatorIndex: number) {
     const validators = this.getValidators(fieldIndex);
     validators.removeAt(validatorIndex);
+  
   }
 
   hasValidatorValue(type: string): boolean {

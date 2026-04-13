@@ -1,13 +1,13 @@
-<h1 class="header">{{ configRoot.title }}</h1>
+<h1 class="header"> {{ configRoot.title }} </h1>
 <form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="onSubmit()" nzLayout="vertical">
   <nz-row [nzGutter]="configRoot.layout.colSpan">
     <ng-container *ngFor="let field of configRoot.fields">
-      <nz-col *ngIf="field.visible" [nzMd]="12" 
+      <nz-col *ngIf="field.visible" [nzMd]="12"
         [nzSm]="24" 
         [nzXs]="24">
         <nz-form-item>
-          <nz-form-label [nzRequired]="field.required">{{field.label}}</nz-form-label>
-          <nz-form-control [nzErrorTip]="getErrorMessage(field.key)">
+          <nz-form-label [nzRequired]="getRequiredValidator(field)">{{field.label}}</nz-form-label>
+          <nz-form-control [nzErrorTip]="(name(field.key)?.touched || name(field.key)?.dirty) ? getErrorMessage(field.key) : ''">
             
             <input *ngIf="field.type === 'input'" nz-input 
                    [formControlName]="field.key" 
@@ -17,18 +17,21 @@
                    [formControlName]="field.key" 
                    type="date">
 
-            <nz-select *ngIf="field.type === 'select'"
+           <nz-select *ngIf="field.type === 'select'"
                        [formControlName]="field.key"
-                       [nzPlaceHolder]="field.placeholder ?? ''">
+                       [nzPlaceHolder]="field.placeholder ?? ''"
+                       [nzLoading]="field.loading"
+                       (nzOpenChange)="onSelectOpen(field)">
+              
               <nz-option *ngFor="let opt of field.options"
                          nzCustomContent
                          [nzValue]="opt.value"
                          [nzLabel]="opt.label">
-                {{opt.label}} 
+                {{ opt.label }} 
                 <span nz-icon [nzType]="opt.icon" [style.color]="opt.color"></span>
               </nz-option>
             </nz-select>
-
+            
           </nz-form-control>
         </nz-form-item>
       </nz-col>

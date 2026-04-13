@@ -35,8 +35,6 @@ import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 registerLocaleData(en);
 
-
-
 @NgModule({
   declarations: [
     AppComponent,

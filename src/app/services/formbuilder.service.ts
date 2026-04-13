@@ -29,7 +29,7 @@ export class FormbuilderService {
 
     config.fields.forEach(field => {
       
-      const defaultValue = field.key == 'birthday' ? null : '';
+      const defaultValue = field.type == 'date' ? null : '';
       group[field.key] = [ defaultValue,
           this.mapValidate(field.validators)]
       })

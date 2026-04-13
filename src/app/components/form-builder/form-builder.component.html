@@ -84,7 +84,30 @@
                       <input nz-input formControlName="placeholder" placeholder="Nhập vào...">
                     </nz-form-item>
                   </div>
+                  <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                    <nz-form-item>
+                      <nz-form-label>Nguồn dữ liệu (DataSource)</nz-form-label>
+                      <nz-select formControlName="dataSource" style="width: 100%">
+                        <nz-option *ngFor="let ds of dataSources" [nzValue]="ds.value" [nzLabel]="ds.label"></nz-option>
+                      </nz-select>
+                    </nz-form-item>
+                  </div>
+                  <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                  <nz-form-item>
+                    <nz-form-label>Phụ thuộc (Parent)</nz-form-label>
+                    <nz-select formControlName="parentKey" nzAllowClear nzPlaceHolder="Chọn field cha">
+                      <nz-option 
+                        *ngFor="let f of fields.controls"
+                        [nzValue]="f.get('key')?.value"
+                        [nzLabel]="f.get('label')?.value || f.get('key')?.value"
+                        [nzDisabled]="f === field">
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-item>
                 </div>
+
+                </div>
+
 
                 <div style="margin-top: 10px; padding: 12px; background: #fff; border-radius: 4px; border: 1px dashed #d9d9d9;">
                   <div style="margin-bottom: 8px; font-weight: 500; font-size: 13px;">Ràng buộc dữ liệu (Validators):</div>
