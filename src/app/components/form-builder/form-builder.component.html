@@ -51,7 +51,7 @@
               <!-- Header của nhóm -->
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <div style="width: 70%;">
-                  <input nz-input formControlName="title" placeholder="Tiêu đề nhóm (không bắt buộc)" style="font-weight: 500;" />
+                  <input nz-input formControlName="title" placeholder="Tiêu đề nhóm" style="font-weight: 500;" />
                 </div>
                 <button nz-button nzType="text" nzDanger (click)="removeGroup(gIdx)">
                   <i nz-icon nzType="delete"></i> Xóa nhóm
@@ -193,6 +193,90 @@
                   </nz-collapse-panel>
                 </nz-collapse>
               </div>
+
+          <!-- Danh sách actions của nhóm -->
+            <div formArrayName="groupActions" style="margin-top: 20px;">
+
+              <button nz-button nzType="dashed" nzBlock type="button" 
+                (click)="addGroupAction(gIdx)" 
+                style="margin-bottom: 12px;">
+                <i nz-icon nzType="plus"></i> Thêm Action cho Group
+              </button>
+
+            <!-- Table -->
+            <nz-table [nzData]="groupActions(gIdx).controls"
+              [nzFrontPagination]="false" nzSize="small"[nzBordered]="true">
+                <thead>
+                  <tr>
+                    <th>Nhãn (Label)</th>
+                    <th>Loại</th>
+                    <th>Style</th>
+                    <th>Icon</th>
+                    <th>Đường dẫn</th>
+                    <th nzWidth="70px"></th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <tr *ngFor="let action of groupActions(gIdx).controls; let aIdx = index" [formGroupName]="aIdx">
+                  <td>
+                    <input nz-input formControlName="label" placeholder="Ví dụ: Lưu">
+                  </td>
+                  <!-- Type -->
+                  <td>
+                    <nz-select formControlName="type" style="width: 100%">
+                      <nz-option 
+                        *ngFor="let t of actionTypes" 
+                        [nzValue]="t.value" 
+                        [nzLabel]="t.label">
+                      </nz-option>
+                    </nz-select>
+                  </td>
+
+                  <!-- Style -->
+                  <td>
+                    <nz-select formControlName="style" style="width: 100%">
+                      <nz-option 
+                        *ngFor="let s of buttonStyles" 
+                        [nzValue]="s.value" 
+                        [nzLabel]="s.label">
+                      </nz-option>
+                    </nz-select>
+                  </td>
+
+                  <!-- Icon -->
+                  <td>
+                    <input 
+                      nz-input 
+                      formControlName="icon" 
+                      placeholder="save">
+                  </td>
+
+                  <!-- Route -->
+                  <td>
+                    <input 
+                      nz-input 
+                      formControlName="route" 
+                      placeholder="/home">
+                  </td>
+
+                  <!-- Delete -->
+                  <td nzAlign="center">
+                    <button 
+                      nz-button 
+                      nzType="text" 
+                      nzDanger 
+                      type="button" 
+                      (click)="removeGroupAction(gIdx, aIdx)">
+                      <i nz-icon nzType="delete"></i>
+                    </button>
+                  </td>
+
+                </tr>
+              </tbody>
+
+            </nz-table>
+          </div>
             </div>
           </div>
         </div>

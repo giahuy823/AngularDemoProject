@@ -4,7 +4,8 @@ export interface Student
     name: string;
     gender: string;
     email: string;
-    address?: string;
+    city?: string;
+    district?: string;
     phoneNumber?: number;
     birthday?: Date;    
 }

@@ -1,5 +1,5 @@
 import { Component, Input, inject, OnInit, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Student } from 'src/app/models/students.model';
 import { FormbuilderService } from 'src/app/services/formbuilder.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -17,7 +17,8 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
   @Output() formSubmit = new EventEmitter<any>();
 
-  fbservice = inject(FormbuilderService);
+  fb = inject(FormBuilder);
+  fbService = inject(FormbuilderService);
   msgservice = inject(NzMessageService);
   http = inject(HttpClient);
 
@@ -27,26 +28,30 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
 
 
+  getAllFields(): any[] {
+    return this.configRoot?.groups?.flatMap((g: any) => g.fields) || [];
+  }
+  
   setupFormSubscription() {
     if (!this.form) return;
 
     this.form.valueChanges.subscribe(value => {
-      console.log('Form value changed:', value);
 
-      this.configRoot.fields.forEach((field: any) => {
+      console.log('Form value changed:', value);
+      const fields = this.getAllFields();
+      fields.forEach((field: any) => {
+
+        console.log(`Checking field: ${field.key}, parentKey: ${field.parentKey}`);
         if (!field.parentKey) return;
 
         const parentValue = value[field.parentKey];
         const prevParentValue = this.prevValues[field.parentKey];
 
-     
         if (parentValue !== prevParentValue) {
-          console.log(`Parent value for ${field.key} changed from ${prevParentValue} to ${parentValue}`);
           this.form.patchValue({ [field.key]: null }, { emitEvent: false });
-          console.log(`Clearing options for ${field.key} due to parent change`);
           this.clearOptions(field.key);
         }
-   
+
         if (!parentValue) {
           this.form.patchValue({ [field.key]: null }, { emitEvent: false });
           this.clearOptions(field.key);
@@ -58,15 +63,13 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   }
 
   clearOptions(fieldKey: string) {
-    const field = this.configRoot.fields.find((f: any) => f.key === fieldKey);
-    if (field) {
-      field.options = [];
-    }
+    const field = this.getAllFields().find((f: any) => f.key === fieldKey);
+    if (field) field.options = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['configRoot'] && this.configRoot) {
-      this.form = this.fbservice.buildForm(this.configRoot);
+      this.form = this.fbService.buildForm(this.configRoot);
       this.setupFormSubscription();
 
       if (this.data) {
@@ -81,17 +84,13 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
 
   onSelectOpen(field: any) {
-
     if (field.parentKey && !this.form.get(field.parentKey)?.value) {
       this.msgservice.warning('Vui lòng chọn trước');
       return;
     }
-    
-    console.log('Opening select for field:', field.key);
 
     const parentValue = this.form.get(field.parentKey)?.value;
 
-   
     if (field.lastParentValue !== parentValue) {
       field.options = [];
     }
@@ -101,7 +100,6 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
       this.loadDataSource(field).subscribe({
         next: (res: any) => {
-
           let options: any[] = res.districts || res.wards || res;
 
           field.options = options.map((item: any) => ({
@@ -120,7 +118,11 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     }
   }
 
-  // API
+  getRequiredValidator(field: any): boolean 
+  { 
+    return field.validators?.some((v: any) => v.type === 'required'); 
+  }
+
   loadDataSource(field: any) {
     const baseUrl = 'https://provinces.open-api.vn/api/v1';
 
@@ -141,20 +143,33 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     return this.http.get<any>('');
   }
 
+
   onSubmit() {
     if (this.form.valid) {
       this.formSubmit.emit(this.form.value);
       console.log(this.form.value);
     } else {
       this.form.markAllAsTouched();
-      this.msgservice.error('Something went wrong!');
+      this.msgservice.error('Form invalid');
     }
   }
 
-  getRequiredValidator(field: any): boolean {
-    return field.validators?.some((v: any) => v.type === 'required');
+  onGroupAction(action: any, group: any) {
+    if (action.type === 'submit') {
+      const keys = group.fields.map((f: any) => f.key);
+
+      const groupValue = Object.keys(this.form.value)
+        .filter(k => keys.includes(k))
+        .reduce((obj: any, k) => {
+          obj[k] = this.form.value[k];
+          return obj;
+        }, {});
+
+      console.log('Group submit:', group.title, groupValue);
+    }
   }
 
+  // helper
   name(controlName: string) {
     return this.form.get(controlName);
   }
@@ -163,11 +178,11 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     const ctrl = this.name(controlName);
     if (!ctrl) return '';
 
-    if (ctrl.hasError('required')) return 'You must enter a value';
-    if (ctrl.hasError('maxlength')) return `Max length exceeded`;
-    if (ctrl.hasError('minlength')) return `Min length not reached`;
-    if (ctrl.hasError('pattern')) return `Invalid format`;
+    if (ctrl.hasError('required')) return 'Required';
+    if (ctrl.hasError('maxlength')) return 'Max length exceeded';
+    if (ctrl.hasError('minlength')) return 'Min length not reached';
     if (ctrl.hasError('email')) return 'Invalid email';
+    if (ctrl.hasError('pattern')) return 'Invalid format';
 
     return '';
   }

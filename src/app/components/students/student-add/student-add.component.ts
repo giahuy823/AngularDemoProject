@@ -18,11 +18,13 @@ export class StudentAddComponent implements OnInit{
   constructor(private studentService: StudentService,
     private Router:Router, 
     private msgService:NzMessageService,
-    private fbService:  FormbuilderService) {}
+    private fbService:  FormbuilderService) {
+      
+    }
 
   configRoot!: FormFromJson;
   ngOnInit(): void {
-        this.fbService.loadConFigFromDb('student','management','Dropdown select').subscribe((config) => {
+        this.fbService.loadConFigFromDb('student','management','StudentFormGroups').subscribe((config) => {
             console.log(config);
             this.configRoot = config;
         });
@@ -36,7 +38,7 @@ export class StudentAddComponent implements OnInit{
       ? new Date(formValue.birthday).toISOString()
       : null
       } as Student;
-      console.log(student);
+    
       this.studentService.addStudent(student).subscribe({
           next:() => {
             this.msgService.success("Added successfully!")

@@ -1,72 +1,87 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormFromJson, Validator } from '../models/form.model';
-import { FormGroup } from '@angular/forms';
+
 @Injectable({
   providedIn: 'root'
 })
 export class FormbuilderService {
-  privateUrl = 'https://localhost:44357/api/app'
+
+  privateUrl = 'https://localhost:44357/api/app';
+
   constructor(private http: HttpClient, private fb: FormBuilder) { }
 
+  // load local json
   loadConfig(): Observable<FormFromJson> {
     return this.http.get<FormFromJson>('assets/test.json');
   }
 
-  loadConFigFromDb(module: string, menu: string, form: string): Observable<FormFromJson>{
+  // load từ DB
+  loadConFigFromDb(module: string, menu: string, form: string): Observable<any> {
     console.log(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`);
-    return this.http.get<FormFromJson>(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`)
+    return this.http.get<any>(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`);
   }
 
+  // save
   saveConfigToDb(payload: any): Observable<any> {
     return this.http.post(`${this.privateUrl}`, payload);
   }
 
-  buildForm(config: FormFromJson): FormGroup {
+  
+  buildForm(config: any): FormGroup {
     const group: any = {};
 
-    config.fields.forEach(field => {
-      
-      const defaultValue = field.type == 'date' ? null : '';
-      group[field.key] = [ defaultValue,
-          this.mapValidate(field.validators)]
-      })
+    const fields = this.getAllFields(config);
 
-      return this.fb.group(group);
-    }
-  
-    private mapValidate(validators?: Validator[]) {
-      if (!validators || validators.length === 0) return [];
+    fields.forEach(field => {
+      const defaultValue = field.type === 'date' ? null : '';
 
-      const result: any = [];
+      group[field.key] = [
+        defaultValue,
+        this.mapValidate(field.validators)
+      ];
+    });
 
-      validators.forEach(v => {
-        switch (v.type) {
-          case 'required':
-            result.push(Validators.required);
-            break;
+    return this.fb.group(group);
+  }
 
-          case 'maxLength':
-            if (v.value) result.push(Validators.maxLength(v.value));
-            break;
+  private getAllFields(config: any): any[] {
+    if (!config.groups) return [];
+    return config.groups.flatMap((g: any) => g.fields || []);
+  }
 
-          case 'minLength':
-            if (v.value) result.push(Validators.minLength(v.value));
-            break;
+  private mapValidate(validators?: Validator[]) {
+    if (!validators || validators.length === 0) return [];
 
-          case 'pattern':
-            if (v.value) result.push(Validators.pattern(v.value));
-            break;
+    const result: any = [];
 
-          case 'email':
-            result.push(Validators.email);
-            break;
-        }
-      });
+    validators.forEach(v => {
+      switch (v.type) {
+        case 'required':
+          result.push(Validators.required);
+          break;
 
-      return result;
-    }
-  
+        case 'maxLength':
+          if (v.value) result.push(Validators.maxLength(v.value));
+          break;
+
+        case 'minLength':
+          if (v.value) result.push(Validators.minLength(v.value));
+          break;
+
+        case 'pattern':
+          if (v.value) result.push(Validators.pattern(v.value));
+          break;
+
+        case 'email':
+          result.push(Validators.email);
+          break;
+      }
+    });
+
+    return result;
+  }
+
 }

@@ -34,16 +34,14 @@ export class FormBuilderComponent implements OnInit {
     { label: 'Email', value: 'email' },
     { label: 'Min Length', value: 'minLength', hasValue: true },
     { label: 'Max Length', value: 'maxLength', hasValue: true },
-    { label: 'Min', value: 'min', hasValue: true },
-    { label: 'Max', value: 'max', hasValue: true },
     { label: 'Pattern (Regex)', value: 'pattern', hasValue: true }
   ];
 
   dataSources = [
-  { label: 'Không (Nhập tay)', value: '' },
-  { label: 'Tỉnh/Thành (Provinces)', value: 'provinces' },
-  { label: 'Quận/Huyện (Districts)', value: 'districts' },
-  { label: 'Phường/Xã (Wards)', value: 'wards' }
+    { label: 'Không (Nhập tay)', value: '' },
+    { label: 'Tỉnh/Thành (Provinces)', value: 'provinces' },
+    { label: 'Quận/Huyện (Districts)', value: 'districts' },
+    { label: 'Phường/Xã (Wards)', value: 'wards' }
   ];
 
   constructor(
@@ -80,8 +78,29 @@ export class FormBuilderComponent implements OnInit {
   addGroup() {
     this.groups.push(this.fb.group({
       title: [''],
-      fields: this.fb.array([])
+      fields: this.fb.array([]),
+      groupActions: this.fb.array([])
     }));
+  }
+
+  groupActions(groupIndex: number): FormArray {
+    return this.groups.at(groupIndex).get('groupActions') as FormArray;
+  }
+
+  addGroupAction(groupIndex: number) {
+   this.groupActions(groupIndex).push(
+    this.fb.group({
+      type: ['submit'],
+      label: ['Action'],
+      icon: [''],
+      style: ['default'],
+      route: ['']
+    })
+  );
+  }
+
+  removeGroupAction(groupIndex: number, actionIndex: number) {
+    this.groupActions(groupIndex).removeAt(actionIndex);
   }
 
   removeGroup(index: number) {
