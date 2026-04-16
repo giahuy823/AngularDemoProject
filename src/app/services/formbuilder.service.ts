@@ -20,13 +20,25 @@ export class FormbuilderService {
 
   // load từ DB
   loadConFigFromDb(module: string, menu: string, form: string): Observable<any> {
-    console.log(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`);
-    return this.http.get<any>(`${this.privateUrl}?module=${module}&menu=${menu}&form=${form}`);
+    // console.log(`${this.privateUrl}/by-code?module=${module}&menu=${menu}&form=${form}`);
+    return this.http.get<any>(`${this.privateUrl}/by-code?module=${module}&menu=${menu}&form=${form}`);
   }
 
   // save
   saveConfigToDb(payload: any): Observable<any> {
     return this.http.post(`${this.privateUrl}`, payload);
+  }
+
+  getAllForms() {
+    return this.http.get<any[]>(`${this.privateUrl}`); 
+  }
+
+  getFormById(id: number) {
+    return this.http.get<any>(`${this.privateUrl}/${id}`);
+  }
+
+  updateForm(id: number, payload: any) {
+    return this.http.put(`${this.privateUrl}/${id}`, payload);
   }
 
   

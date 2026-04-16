@@ -30,7 +30,7 @@ export class StudentAddComponent implements OnInit{
         });
         
     }
-
+    
     handleSubmit(formValue: any){
        const student ={
         ...formValue,

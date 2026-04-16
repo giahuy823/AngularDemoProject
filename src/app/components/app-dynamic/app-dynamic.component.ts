@@ -104,7 +104,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
           field.options = options.map((item: any) => ({
             label: item.name,
-            value: item.code
+            value: item.code.toString(),
           }));
 
           field.lastParentValue = parentValue;

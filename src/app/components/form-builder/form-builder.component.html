@@ -1,4 +1,61 @@
+
+
+
 <div class="container" style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+   <!-- ================= SELECT FORM ================= -->
+  <nz-row [nzGutter]="16" style="margin-bottom: 16px;">
+    
+    <nz-col [nzSpan]="12">
+      <nz-form-item>
+        <nz-form-label>Chọn Form</nz-form-label>
+        <nz-form-control>
+
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Tìm form..."
+            style="width: 100%;"
+
+            [(ngModel)]="selectedFormId"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onSelectForm($event)"
+
+            [nzFilterOption]="filterOption"
+          >
+            <nz-option
+              *ngFor="let f of formList"
+              [nzLabel]="f.name"
+              [nzValue]="f.id"
+            ></nz-option>
+          </nz-select>
+
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+
+    <nz-col [nzSpan]="12" style="display: flex; align-items: end; gap: 8px;">
+      
+      <button 
+        nz-button 
+        nzType="primary" 
+        (click)="updateForm()" 
+        [disabled]="!selectedFormId"
+      >
+        <i nz-icon nzType="save"></i> Update
+      </button>
+
+      <button 
+        nz-button 
+        nzType="default" 
+        (click)="buildForm()"
+      >
+        Reset
+      </button>
+
+    </nz-col>
+  </nz-row>
+
+  
   <form nz-form [nzLayout]="'vertical'" [formGroup]="form" (ngSubmit)="submit()">
     
     <nz-card [nzBordered]="false" nzTitle="Cấu hình Form" [nzExtra]="saveBtn" class="shadow-card">
