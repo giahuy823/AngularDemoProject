@@ -28,27 +28,36 @@
   </tbody>
 </table>
 </div> -->
-<!-- ===== FORM ===== -->
-<nz-card style="margin-bottom: 16px;">
-  <app-dynamic
-    [configRoot]="configRoot"
-    [data]="selectedStudent"
-    (formSubmit)="onSubmit($event)"
-    #dynamicForm>
-  </app-dynamic>
-</nz-card>
 
-<nz-spin [nzSpinning]="loading">
-  <app-table
-    [studentList]="studentList"
-    [selectedStudentId]="selectedStudent?.id"
-    (studentSelected)="onStudentSelect($event)">
-  </app-table>
-</nz-spin>
+<div class="student-management-wrapper">
+  <div class="dynamic-layout-container">
+    <!-- Dynamic Form Section -->
+    <div class="dynamic-section">
+      <app-dynamic
+        [configRoot]="configRoot"
+        [data]="selectedStudent"
+        (formSubmit)="onSubmit($event)"
+        #dynamicForm>
+      </app-dynamic>
+    </div>
 
+    <!-- Table Section -->
+    <div class="table-section">
+      <nz-spin [nzSpinning]="loading">
+        <app-table
+          [studentList]="studentList"
+          [selectedStudentId]="selectedStudent?.id"
+          (studentSelected)="onStudentSelect($event)">
+        </app-table>
+      </nz-spin>
+    </div>
+  </div>
 
-<div style="text-align: right; margin-top: 16px;">
-  <button nz-button nzType="primary" (click)="dynamicForm.onSubmit()">
-    Submit
-  </button>
+  <!-- Footer Actions -->
+  <div class="sticky-footer">
+    <button nz-button nzType="primary" nzSize="large" (click)="dynamicForm.onSubmit()" class="submit-btn">
+      <span nz-icon nzType="save"></span>
+      Submit Student Data
+    </button>
+  </div>
 </div>

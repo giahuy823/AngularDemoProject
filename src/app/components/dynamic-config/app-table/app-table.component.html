@@ -1,6 +1,6 @@
 <nz-card nzTitle="Danh sách sinh viên">
 
-  <nz-table [nzData]="studentList" [nzBordered]="true">
+  <nz-table #data [nzData]="studentList" [nzBordered]="true" [nzPageSize]="3">
 
     <thead>
       <tr>
@@ -15,7 +15,7 @@
 
     <tbody>
       <tr
-        *ngFor="let s of studentList"
+        *ngFor="let s of data.data"
         (click)="onRowClick(s)"
         class="table-row"
         [class.selected-row]="isSelected(s)"
@@ -26,10 +26,8 @@
         <td>{{ s.email }}</td>
 
         <td (click)="$event.stopPropagation()">
-          <button nz-button nzType="link">Edit</button>
-          <button nz-button nzType="link" nzDanger (click)="onDelete(s)">
-            Delete
-          </button>
+          <button nz-button nzType="link" (click)="onRowClick(s)">Edit</button>
+          
         </td>
 
       </tr>
