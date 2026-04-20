@@ -4,7 +4,8 @@ import { Student } from 'src/app/models/students.model';
 import { FormbuilderService } from 'src/app/services/formbuilder.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { HttpClient } from '@angular/common/http';
-
+import { switchMap, tap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 @Component({
   selector: 'app-dynamic',
   templateUrl: './app-dynamic.component.html',
@@ -14,7 +15,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
   @Input() configRoot!: any;
   @Input() data?: Student;
-
+  @Input() studentList?: Student[];
   @Output() formSubmit = new EventEmitter<any>();
 
   fb = inject(FormBuilder);
@@ -67,6 +68,14 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     if (field) field.options = [];
   }
 
+  formatDate(date: string | Date | null | undefined): string | null {
+    if (!date) return null;
+    if (typeof date === 'string') {
+      return date.split('T')[0];
+    }
+    return new Date(date).toISOString().split('T')[0];
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['configRoot'] && this.configRoot) {
       this.form = this.fbService.buildForm(this.configRoot);
@@ -77,11 +86,29 @@ export class AppDynamicComponent implements OnInit, OnChanges {
       }
     }
 
-    if (changes['data'] && this.data && this.form) {
-      this.form.patchValue(this.data);
+   if (changes['data'] && this.data && this.form) {
+      const fields = this.getAllFields();
+      const cityField = fields.find(f => f.key === 'city');
+      const districtField = fields.find(f => f.key === 'district');
+
+      const patchedData = {
+        ...this.data,
+        birthday: this.formatDate(this.data.birthday),
+      };
+
+      this.loadDataSource(cityField).pipe(
+        tap(res => {
+          cityField.options = res.map((i: any) => ({ label: i.name, value: i.code.toString() }));
+          this.form.patchValue({ ...patchedData, district: null });
+        }),
+     
+        switchMap(() => this.loadDataSource({ ...districtField, parentKey: 'city' }))
+      ).subscribe(res2 => {
+        districtField.options = res2.districts.map((i: any) => ({ label: i.name, value: i.code.toString() }));
+        this.form.patchValue({ district: patchedData.district });
+      });
     }
   }
-
 
   onSelectOpen(field: any) {
     if (field.parentKey && !this.form.get(field.parentKey)?.value) {
@@ -155,21 +182,28 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   }
 
   onGroupAction(action: any, group: any) {
-    if (action.type === 'submit') {
       const keys = group.fields.map((f: any) => f.key);
-
+    if (action.type === 'submit') {
       const groupValue = Object.keys(this.form.value)
         .filter(k => keys.includes(k))
         .reduce((obj: any, k) => {
           obj[k] = this.form.value[k];
           return obj;
         }, {});
-
+      this.formSubmit.emit(groupValue);
       console.log('Group submit:', group.title, groupValue);
     }
+    if (action.type === 'reset') {
+      keys.forEach((k:string )=> {
+        const control = this.form.get(k);
+        if (control) {
+          control.reset(); 
+        }
+      });
   }
+}
 
-  // helper
+  // helper for template
   name(controlName: string) {
     return this.form.get(controlName);
   }

@@ -14,10 +14,12 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 import { HttpClientModule } from '@angular/common/http';
-import { AppDynamicComponent } from '../app-dynamic/app-dynamic.component';
-import { DynamicformModule } from '../app-dynamic/dynamicform.module';
+import { AppDynamicComponent } from '../dynamic-config/app-dynamic/app-dynamic.component';
+import { DynamicformModule } from '../dynamic-config/dynamicform.module';
+import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
 @NgModule({
   declarations: [
     StudentAddComponent,
@@ -37,7 +39,9 @@ import { DynamicformModule } from '../app-dynamic/dynamicform.module';
     NzMessageModule,
     NzModalModule,
     NzSelectModule,
-    NzIconModule
+    NzIconModule,
+    NzSpinModule,
+    NzCardModule,
   ]
   //  exports: [   
   //   StudentListComponent,

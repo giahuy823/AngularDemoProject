@@ -57,11 +57,16 @@ export class FormBuilderComponent implements OnInit {
 
   // ================= INIT =================
 
+  resetForm() {
+    this.selectedFormId = null;
+    this.form.reset();
+  }
   buildForm() {
+    this.selectedFormId = null;
     this.form = this.fb.group({
       title: ['', [Validators.required]],
       layout: this.fb.group({
-        colSpan: [24],
+        spacing: [16],
         columns: [2]
       }),
       groups: this.fb.array([]),
@@ -134,6 +139,7 @@ export class FormBuilderComponent implements OnInit {
       placeholder: [f.placeholder],
       dataSource: [f.dataSource],
       parentKey: [f.parentKey],
+      colSpan: [f.colSpan || 12],
       validators: this.fb.array([]),
       options: this.fb.array([])
     });
@@ -218,6 +224,7 @@ export class FormBuilderComponent implements OnInit {
       placeholder: [''],
       dataSource: [''],
       parentKey: [''],
+      colSpan: [12],
       validators: this.fb.array([]),
       options: this.fb.array([])
     }));

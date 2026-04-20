@@ -21,6 +21,9 @@ export class StudentService {
   updateStudent(student: Student): Observable<Student> {
     return this.http.put<Student>(`${this.privateUrl}/${student.id}`, student);
   }
+  updatePatchStudent(id: string, student: Partial<Student>): Observable<Student> {
+    return this.http.patch<Student>(`${this.privateUrl}/${id}`, student);
+  }
   deleteStudent(id: string): Observable<void> {
     return this.http.delete<void>(`${this.privateUrl}/${id}`);
   }

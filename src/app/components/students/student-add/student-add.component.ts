@@ -30,7 +30,7 @@ export class StudentAddComponent implements OnInit{
         });
         
     }
-    
+
     handleSubmit(formValue: any){
        const student ={
         ...formValue,
@@ -38,7 +38,9 @@ export class StudentAddComponent implements OnInit{
       ? new Date(formValue.birthday).toISOString()
       : null
       } as Student;
-    
+      
+      console.log('Submitting student:', student);
+
       this.studentService.addStudent(student).subscribe({
           next:() => {
             this.msgService.success("Added successfully!")

@@ -33,7 +33,7 @@
       </nz-form-item>
     </nz-col>
 
-    <nz-col [nzSpan]="12" style="display: flex; align-items: end; gap: 8px;">
+    <nz-col [nzSpan]="12">
       
       <button 
         nz-button 
@@ -47,7 +47,7 @@
       <button 
         nz-button 
         nzType="default" 
-        (click)="buildForm()"
+        (click)="resetForm()"
       >
         Reset
       </button>
@@ -55,7 +55,7 @@
     </nz-col>
   </nz-row>
 
-  
+
   <form nz-form [nzLayout]="'vertical'" [formGroup]="form" (ngSubmit)="submit()">
     
     <nz-card [nzBordered]="false" nzTitle="Cấu hình Form" [nzExtra]="saveBtn" class="shadow-card">
@@ -79,7 +79,7 @@
             <div nz-col [nzSpan]="12">
               <nz-form-item>
                 <nz-form-label>ColSpan (Grid 24)</nz-form-label>
-                <nz-input-number style="width: 100%" formControlName="colSpan" [nzMin]="1" [nzMax]="24"></nz-input-number>
+                <nz-input-number style="width: 100%" formControlName="spacing" [nzMin]="1" [nzMax]="24"></nz-input-number>
               </nz-form-item>
             </div>
           </div>
@@ -150,6 +150,15 @@
                           <input nz-input formControlName="label" placeholder="Ví dụ: Địa chỉ Email">
                         </nz-form-item>
                       </div>
+                      <div nz-col [nzSpan]="6">
+                        <nz-form-item>
+                          <nz-form-label>Layout(colSpan)</nz-form-label>
+                          <nz-input-number style="width: 100%" formControlName="colSpan" [nzMin]="1" ></nz-input-number>
+                        </nz-form-item>
+
+                      </div>
+
+
                       <div nz-col [nzSpan]="6">
                         <nz-form-item>
                           <nz-form-label>Loại Input</nz-form-label>

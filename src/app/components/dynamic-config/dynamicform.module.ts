@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AppDynamicComponent } from './app-dynamic.component';
+import { AppDynamicComponent } from './app-dynamic/app-dynamic.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -14,11 +14,12 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { StudentRoutingModule } from '../students/student-routing.module';
 import { RouterModule } from '@angular/router';
+import { AppTableComponent } from './app-table/app-table.component';
 
 
 @NgModule({
-  declarations: [AppDynamicComponent],
-  exports: [AppDynamicComponent],
+  declarations: [AppDynamicComponent,AppTableComponent],
+  exports: [AppDynamicComponent,AppTableComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,

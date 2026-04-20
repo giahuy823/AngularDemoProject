@@ -17,7 +17,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzLayoutModule} from 'ng-zorro-antd/layout';
-import { AppDynamicComponent } from './components/app-dynamic/app-dynamic.component';
+import { AppDynamicComponent } from './components/dynamic-config/app-dynamic/app-dynamic.component';
 import { FormBuilderComponent } from './components/form-builder/form-builder.component'
 
 // --- NG-ZORRO MODULES ---
@@ -33,6 +33,7 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { AppTableComponent } from './components/dynamic-config/app-table/app-table.component';
 registerLocaleData(en);
 
 @NgModule({

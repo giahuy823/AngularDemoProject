@@ -28,53 +28,26 @@
   </tbody>
 </table>
 </div> -->
+<!-- ===== FORM ===== -->
+<nz-card style="margin-bottom: 16px;">
+  <app-dynamic
+    [configRoot]="configRoot"
+    [data]="selectedStudent"
+    (formSubmit)="onSubmit($event)"
+    #dynamicForm>
+  </app-dynamic>
+</nz-card>
 
-<div class="container">
-  <h1>Danh sách sinh viên</h1>
-  <button nz-button nzType="primary" routerLink="/students/student-add" class="action-btn">
-     <span nz-icon nzType="plus-circle" nzTheme="outline"> </span>
-     Add Student 
+<nz-spin [nzSpinning]="loading">
+  <app-table
+    [studentList]="studentList"
+    (studentSelected)="onStudentSelect($event)">
+  </app-table>
+</nz-spin>
+
+
+<div style="text-align: right; margin-top: 16px;">
+  <button nz-button nzType="primary" (click)="dynamicForm.onSubmit()">
+    Submit
   </button>
-
-
-  <nz-table #studentTable [nzData]="studentList" [nzBordered]="true" [nzShowPagination]="true" 
-  [nzPageSize]="2" [nzFooter]="footerTemplate" class="shadow rounded" [nzLoading]="loadingCheck">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Address</th>
-        <th>Phone Number</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let s of studentTable.data">
-          <td>{{s.name}}</td>
-          <td>{{s.email}}</td>
-          
-          <td>0{{s.phoneNumber}}</td> 
-       <td class="actions-container">
-          <button nz-button nzType="primary"
-                  [routerLink]="['/students/student-edit', s.id]"
-                  class="action-btn">
-            <span nz-icon nzType="edit"></span>
-              Edit
-          </button>
-
-          <button nz-button nzType="primary" nzDanger
-                  (click)="deleteStudent(s.id)"
-                  class="action-btn">
-            <span nz-icon nzType="delete"></span>
-              Delete
-          </button>
-      </td>
-      </tr>
-    </tbody>
-  </nz-table>
-
-
-  <ng-template #footerTemplate>
-  <div style="display: flex; align-items: center; justify-content: center;" > Student table with getAll service()</div>
-</ng-template>
 </div>
