@@ -1,0 +1,25 @@
+::ng-deep .ant-table-tbody > tr.table-row > td {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+::ng-deep .ant-table-tbody > tr.table-row:hover > td {
+  background: #f3f8ff !important;
+}
+
+::ng-deep .ant-table-tbody > tr.selected-row > td {
+  background: linear-gradient(90deg, #e6f4ff 0%, #f8fbff 100%) !important;
+  box-shadow: inset 4px 0 0 #1677ff, 0 2px 8px rgba(22, 119, 255, 0.08);
+  font-weight: 600;
+  color: #0f2747;
+}
+
+::ng-deep .ant-table-tbody > tr.selected-row:hover > td {
+  background: linear-gradient(90deg, #d9eeff 0%, #f1f7ff 100%) !important;
+}
+
+@media (max-width: 576px) {
+  ::ng-deep .ant-table-tbody > tr.selected-row > td {
+    box-shadow: inset 3px 0 0 #1677ff;
+    background: #f4f9ff !important;
+  }
+}

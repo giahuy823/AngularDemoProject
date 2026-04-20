@@ -86,8 +86,22 @@ export class AppDynamicComponent implements OnInit, OnChanges {
       }
     }
 
-   if (changes['data'] && this.data && this.form) {
+    if (changes['data'] && this.form) {
+      this.form.reset();
+      this.prevValues = {};
+
       const fields = this.getAllFields();
+      fields.forEach((field: any) => {
+        if (field.parentKey) {
+          field.options = [];
+          field.lastParentValue = undefined;
+        }
+      });
+
+      if (!this.data) {
+        return;
+      }
+
       const cityField = fields.find(f => f.key === 'city');
       const districtField = fields.find(f => f.key === 'district');
 
@@ -95,6 +109,11 @@ export class AppDynamicComponent implements OnInit, OnChanges {
         ...this.data,
         birthday: this.formatDate(this.data.birthday),
       };
+
+      if (!cityField || !districtField) {
+        this.form.patchValue(patchedData);
+        return;
+      }
 
       this.loadDataSource(cityField).pipe(
         tap(res => {

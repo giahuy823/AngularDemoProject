@@ -1,5 +1,4 @@
-import { Component, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { OnInit } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { Student } from 'src/app/models/students.model';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { StudentService } from 'src/app/services/student.service';
@@ -12,6 +11,7 @@ import { EventEmitter } from '@angular/core';
 })
 export class AppTableComponent {
   @Input() studentList: Student[] = [];
+  @Input() selectedStudentId?: string;
   @Output() studentSelected = new EventEmitter<Student>();
 
   constructor(
@@ -26,6 +26,10 @@ export class AppTableComponent {
     this.studentSelected.emit(student);
   }
 
+  isSelected(student: Student): boolean {
+    return this.selectedStudentId === student.id;
+  }
+
   // delete
   onDelete(student: Student) {
     this.msgService.warning(`Xóa: ${student.name}`);
@@ -35,7 +39,6 @@ export class AppTableComponent {
   
 
 }
-
 
 
 

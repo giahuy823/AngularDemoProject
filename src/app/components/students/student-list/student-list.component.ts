@@ -33,7 +33,13 @@ export class StudentListComponent implements OnInit {
   }
   onStudentSelect(student: Student) {
     console.log('Selected student:', student);
-    this.selectedStudent = student;
+    
+    if (this.selectedStudent?.id === student.id) {
+      this.selectedStudent = undefined;
+      return;
+    }
+
+    this.selectedStudent = { ...student };
   }
 
   onSubmit(formValue: any) {

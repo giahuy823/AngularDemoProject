@@ -17,7 +17,8 @@
       <tr
         *ngFor="let s of studentList"
         (click)="onRowClick(s)"
-        style="cursor: pointer;"
+        class="table-row"
+        [class.selected-row]="isSelected(s)"
       >
         <td>{{ s.name }}</td>
         <td>{{ s.email }}</td>

@@ -41,6 +41,7 @@
 <nz-spin [nzSpinning]="loading">
   <app-table
     [studentList]="studentList"
+    [selectedStudentId]="selectedStudent?.id"
     (studentSelected)="onStudentSelect($event)">
   </app-table>
 </nz-spin>
