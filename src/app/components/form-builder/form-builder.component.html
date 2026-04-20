@@ -1,9 +1,12 @@
 
 
 
-<div class="container" style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
-   <!-- ================= SELECT FORM ================= -->
-  <nz-row [nzGutter]="16" style="margin-bottom: 16px;">
+<div class="form-builder-page-wrapper">
+  
+  <div class="form-builder-content-area">
+    <div class="container-fluid" style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+      <!-- ================= SELECT FORM ================= -->
+      <nz-row [nzGutter]="16" style="margin-bottom: 16px;">
     
     <nz-col [nzSpan]="12">
       <nz-form-item>
@@ -58,7 +61,7 @@
 
   <form nz-form [nzLayout]="'vertical'" [formGroup]="form" (ngSubmit)="submit()">
     
-    <nz-card [nzBordered]="false" nzTitle="Cấu hình Form" [nzExtra]="saveBtn" class="shadow-card">
+    <nz-card id="form-config-header" [nzBordered]="false" nzTitle="Cấu hình Form" [nzExtra]="saveBtn" class="shadow-card">
       <div nz-row [nzGutter]="24">
         <div nz-col [nzSpan]="12">
           <nz-form-item>
@@ -87,7 +90,7 @@
       </div>
     </nz-card>
 
-    <nz-tabset nzType="card" style="margin-top: 20px;">
+    <nz-tabset nzType="card" style="margin-top: 20px;" [(nzSelectedIndex)]="selectedIndex">
       
       <nz-tab nzTitle="Danh sách Fields">
         <div style="background: #fff; padding: 20px; border-radius: 0 0 8px 8px;">
@@ -103,6 +106,7 @@
           <div formArrayName="groups">
             <div *ngFor="let group of groups.controls; let gIdx = index" 
                  [formGroupName]="gIdx" 
+                 [id]="'group-' + gIdx"
                  style="margin-bottom: 24px; border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; background: #fefefe;">
               
               <!-- Header của nhóm -->
@@ -129,6 +133,7 @@
                     [nzActive]="true"
                     [nzExtra]="extraTpl"
                     style="background: #fafafa; border: 1px solid #d9d9d9; margin-bottom: 16px; border-radius: 4px;"
+                    [id]="'field-' + gIdx + '-' + fIdx"
                   >
                     <ng-template #panelHeader>
                       <span style="font-weight: 600; color: #1890ff;">
@@ -261,7 +266,7 @@
               </div>
 
           <!-- Danh sách actions của nhóm -->
-            <div formArrayName="groupActions" style="margin-top: 20px;">
+            <div [id]="'group-actions-' + gIdx" formArrayName="groupActions" style="margin-top: 20px;">
 
               <button nz-button nzType="dashed" nzBlock type="button" 
                 (click)="addGroupAction(gIdx)" 
@@ -348,13 +353,13 @@
         </div>
       </nz-tab>
 
-      <nz-tab nzTitle="Nút chức năng (Actions)">
+      <nz-tab id="global-actions-tab" nzTitle="Nút chức năng (Actions)">
         <div style="background: #fff; padding: 20px; border-radius: 0 0 8px 8px;">
           <button nz-button nzType="dashed" nzBlock type="button" (click)="addAction()" style="margin-bottom: 16px;">
             <i nz-icon nzType="plus"></i> Thêm Action (Button)
           </button>
 
-          <nz-table #basicTable [nzData]="actions.controls" [nzFrontPagination]="false" nzSize="middle" [nzBordered]="true">
+          <nz-table id="global-actions-table" #basicTable [nzData]="actions.controls" [nzFrontPagination]="false" nzSize="middle" [nzBordered]="true">
             <thead>
               <tr>
                 <th>Nhãn (Label)</th>
@@ -399,7 +404,30 @@
     </ng-template>
 
   </form>
-</div>
+    </div>
+  </div> 
+
+  <div class="form-builder-sidebar" *ngIf="groups.length > 0">
+    <div class="toc-container">
+      <div class="toc-header">
+        <i nz-icon nzType="ordered-list"></i> Mục lục Form
+      </div>
+      <ul class="toc-list">
+        <li class="toc-item" (click)="scrollToItem('form-config-header')">
+          <i nz-icon nzType="setting"></i> Cấu hình chung
+        </li>
+        <li *ngFor="let group of groups.controls; let i = index" class="toc-item" (click)="scrollToItem('group-' + i)">
+          <i nz-icon nzType="block"></i> {{ group.get('title')?.value || 'Nhóm ' + (i + 1) }}
+        </li>
+        <li class="toc-item" (click)="scrollToItem('global-actions-tab')">
+          <i nz-icon nzType="rocket"></i> Nút chức năng
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div> <!-- form-builder-page-wrapper -->
+
 
 <div style="margin-top: 8px; padding: 0 24px;">
   <h3>Cấu hình JSON:</h3>

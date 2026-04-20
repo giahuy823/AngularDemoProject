@@ -13,6 +13,7 @@ export class FormBuilderComponent implements OnInit {
   form!: FormGroup;
   selectedFormId: number | null = null;
   formList: any[] = [];
+  selectedIndex = 0;
 
   actionTypes = [
     { label: 'Submit', value: 'submit' },
@@ -209,6 +210,7 @@ export class FormBuilderComponent implements OnInit {
       fields: this.fb.array([]),
       groupActions: this.fb.array([])
     }));
+    this.scrollToItem(`group-${this.groups.length - 1}`);
   }
 
   removeGroup(index: number) {
@@ -216,7 +218,8 @@ export class FormBuilderComponent implements OnInit {
   }
 
   addField(groupIndex: number) {
-    this.fields(groupIndex).push(this.fb.group({
+    const fields = this.fields(groupIndex);
+    fields.push(this.fb.group({
       key: [''],
       label: [''],
       type: ['input'],
@@ -228,6 +231,7 @@ export class FormBuilderComponent implements OnInit {
       validators: this.fb.array([]),
       options: this.fb.array([])
     }));
+    this.scrollToItem(`field-${groupIndex}-${fields.length - 1}`);
   }
 
   removeField(groupIndex: number, index: number) {
@@ -263,13 +267,15 @@ export class FormBuilderComponent implements OnInit {
   }
 
   addGroupAction(groupIndex: number) {
-    this.groupActions(groupIndex).push(this.createAction({
+    const actions = this.groupActions(groupIndex);
+    actions.push(this.createAction({
       type: 'submit',
       label: 'Action',
       icon: '',
       style: 'default',
       route: ''
     }));
+    this.scrollToItem(`group-actions-${groupIndex}`);
   }
 
   removeGroupAction(groupIndex: number, index: number) {
@@ -284,6 +290,7 @@ export class FormBuilderComponent implements OnInit {
       style: 'primary',
       route: ''
     }));
+    this.scrollToItem('global-actions-table');
   }
 
   removeAction(index: number) {
@@ -297,6 +304,35 @@ export class FormBuilderComponent implements OnInit {
   hasValidatorValue(type: string): boolean {
   const found = this.validatorTypes.find(v => v.value === type);
   return !!found?.hasValue;
+  }
+
+  scrollToItem(id: string) {
+    if (id.startsWith('group-')) {
+      this.selectedIndex = 0;
+    } else if (id.includes('global-actions')) {
+      this.selectedIndex = 1;
+    }
+
+    setTimeout(() => {
+      const element = document.getElementById(id);
+      if (element) {
+        // Use block: 'start' and consider header offset if any
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Highlight effect
+        element.style.transition = 'all 0.5s';
+        const originalShadow = element.style.boxShadow;
+        const originalBorder = element.style.borderColor;
+        
+        element.style.boxShadow = '0 0 15px rgba(22, 119, 255, 0.5)';
+        element.style.borderColor = '#1677ff';
+        
+        setTimeout(() => {
+          element.style.boxShadow = originalShadow;
+          element.style.borderColor = originalBorder;
+        }, 2000);
+      }
+    }, 150); // Increased delay to ensure tab content is rendered
   }
 
   // ================= SUBMIT / UPDATE =================
