@@ -23,3 +23,27 @@
     background: #f4f9ff !important;
   }
 }
+
+
+::ng-deep .ant-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+::ng-deep .ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+::ng-deep .ant-table-tbody > tr > td {
+  transition: background-color 0.3s;
+}
+
+::ng-deep .ant-table-tbody > tr:hover > td {
+  background: #e6f7ff !important;
+}
+
+::ng-deep .ant-table-tbody > tr:nth-child(odd) > td {
+  background: #fafafa;
+}
