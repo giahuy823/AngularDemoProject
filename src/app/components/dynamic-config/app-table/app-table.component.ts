@@ -20,7 +20,7 @@ export class AppTableComponent {
   ) {}
   
 
-  // click row
+
   onRowClick(student: Student) {
     console.log('Row clicked:', student);
     this.studentSelected.emit(student);
@@ -33,9 +33,8 @@ export class AppTableComponent {
   // delete
   onDelete(student: Student) {
     this.msgService.warning(`Xóa: ${student.name}`);
-    // sau này gọi API ở đây
+
   }
-  
   
 
 }

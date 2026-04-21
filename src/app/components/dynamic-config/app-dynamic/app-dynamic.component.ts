@@ -201,8 +201,19 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   }
 
   onGroupAction(action: any, group: any) {
-      const keys = group.fields.map((f: any) => f.key);
+
+    
+    
+    const keys = group.fields.map((f: any) => f.key);
+    
     if (action.type === 'submit') {
+
+      if (!this.isGroupValid(group)) {
+        this.markGroupTouched(group);
+        this.msgservice.error(`Group "${group.title}" invalid`);
+        return;
+      }
+      
       const groupValue = Object.keys(this.form.value)
         .filter(k => keys.includes(k))
         .reduce((obj: any, k) => {
@@ -211,6 +222,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
         }, {});
       this.formSubmit.emit(groupValue);
       console.log('Group submit:', group.title, groupValue);
+      
     }
     if (action.type === 'reset') {
       keys.forEach((k:string )=> {
@@ -219,8 +231,24 @@ export class AppDynamicComponent implements OnInit, OnChanges {
           control.reset(); 
         }
       });
+    }
   }
-}
+
+  isGroupValid(group: any): boolean {
+    const keys = group.fields.map((f: any) => f.key);
+
+    return keys.every((key: string) => {
+      const control = this.form.get(key);
+      return control && control.valid;
+    });
+  }
+
+  markGroupTouched(group: any) {
+    group.fields.forEach((f: any) => {
+      const control = this.form.get(f.key);
+      control?.markAsTouched();
+    });
+  }
 
   // helper for template
   name(controlName: string) {

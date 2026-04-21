@@ -5,9 +5,10 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Email</th>
         <th>Gender</th>
         <th>Email</th>
+        <th>Phone</th>
+        <th>Birthday</th>
         <th>Action</th>
 
       </tr>
@@ -21,10 +22,10 @@
         [class.selected-row]="isSelected(s)"
       >
         <td>{{ s.name }}</td>
-        <td>{{ s.email }}</td>
         <td>{{ s.gender }}</td>
         <td>{{ s.email }}</td>
-
+        <td>0{{ s.phoneNumber }}</td>
+        <td>{{ s.birthday | date: "dd/MM/yyyy" }}</td>
         <td (click)="$event.stopPropagation()">
           <button nz-button nzType="link" (click)="onRowClick(s)">Edit</button>
           

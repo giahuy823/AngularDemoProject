@@ -316,10 +316,8 @@ export class FormBuilderComponent implements OnInit {
     setTimeout(() => {
       const element = document.getElementById(id);
       if (element) {
-        // Use block: 'start' and consider header offset if any
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         
-        // Highlight effect
         element.style.transition = 'all 0.5s';
         const originalShadow = element.style.boxShadow;
         const originalBorder = element.style.borderColor;
@@ -332,7 +330,7 @@ export class FormBuilderComponent implements OnInit {
           element.style.borderColor = originalBorder;
         }, 2000);
       }
-    }, 150); // Increased delay to ensure tab content is rendered
+    }, 150); 
   }
 
   // ================= SUBMIT / UPDATE =================
