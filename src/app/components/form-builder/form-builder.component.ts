@@ -25,12 +25,7 @@ export class FormBuilderComponent implements OnInit {
     { label: 'Divider / Header', value: 'divider' }
   ];
 
-  inputTypes = [
-    { label: 'Input Text', value: 'input' },
-    { label: 'Dropdown Select', value: 'select' },
-    { label: 'Date Picker', value: 'date' }
-  ];
-
+ 
   actionTypes = [
     { label: 'Submit', value: 'submit' },
     { label: 'Reset', value: 'reset' },

@@ -168,7 +168,7 @@
                         <nz-form-item>
                           <nz-form-label>Loại Input</nz-form-label>
                           <nz-select formControlName="type" style="width: 100%">
-                        
+                              <nz-option *ngFor="let t of fieldTypes" [nzValue]="t.value" [nzLabel]="t.label"></nz-option>
                           </nz-select>
                         </nz-form-item>
                       </div>
