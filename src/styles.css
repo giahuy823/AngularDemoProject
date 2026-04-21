@@ -26,6 +26,20 @@ button[nz-button] {
 }
 
 
+.ant-form-item-label > label.ant-form-item-required::before {
+    display: none !important; 
+}
+
+.ant-form-item-label > label.ant-form-item-required::after {
+    display: inline-block;
+    margin-inline-start: 4px;
+    color: #ff4d4f;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: '*'; 
+}
+
 
 .app-layout {
   height: 100vh;

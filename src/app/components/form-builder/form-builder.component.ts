@@ -15,6 +15,22 @@ export class FormBuilderComponent implements OnInit {
   formList: any[] = [];
   selectedIndex = 0;
 
+  fieldTypes = [
+    { label: 'Input Text', value: 'input' },
+    { label: 'Select', value: 'select' },
+    { label: 'Date Picker', value: 'date' },
+    { label: 'Number', value: 'number' },
+    { label: 'Range Picker (Time)', value: 'timeRange' }, 
+    { label: 'Upload', value: 'upload' },
+    { label: 'Divider / Header', value: 'divider' }
+  ];
+
+  inputTypes = [
+    { label: 'Input Text', value: 'input' },
+    { label: 'Dropdown Select', value: 'select' },
+    { label: 'Date Picker', value: 'date' }
+  ];
+
   actionTypes = [
     { label: 'Submit', value: 'submit' },
     { label: 'Reset', value: 'reset' },
@@ -378,5 +394,14 @@ export class FormBuilderComponent implements OnInit {
         next: () => this.message.success('Cập nhật thành công!'),
         error: () => this.message.error('Update thất bại!')
       });
+  }
+
+  copyJson() {
+    const json = JSON.stringify(this.form.value, null, 2);
+    navigator.clipboard.writeText(json).then(() => {
+      this.message.success('Đã sao chép cấu hình JSON vào bộ nhớ tạm!');
+    }).catch(err => {
+      this.message.error('Lỗi khi sao chép: ' + err);
+    });
   }
 }

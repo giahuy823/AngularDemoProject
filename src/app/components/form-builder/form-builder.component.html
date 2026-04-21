@@ -168,9 +168,7 @@
                         <nz-form-item>
                           <nz-form-label>Loại Input</nz-form-label>
                           <nz-select formControlName="type" style="width: 100%">
-                            <nz-option nzValue="input" nzLabel="Input Text"></nz-option>
-                            <nz-option nzValue="select" nzLabel="Dropdown Select"></nz-option>
-                            <nz-option nzValue="date" nzLabel="Date Picker"></nz-option>
+                        
                           </nz-select>
                         </nz-form-item>
                       </div>
@@ -398,9 +396,14 @@
     </nz-tabset>
 
     <ng-template #saveBtn>
-      <button nz-button nzType="primary" type="submit" [disabled]="!form.valid" style="border-radius: 4px;">
-        <i nz-icon nzType="save"></i> Lưu cấu hình
-      </button>
+      <div style="display: flex; gap: 8px;">
+        <button nz-button nzType="default" type="button" (click)="copyJson()" style="border-radius: 4px; display: flex; align-items: center; gap: 4px;">
+          <i nz-icon nzType="copy"></i> Copy JSON
+        </button>
+        <button nz-button nzType="primary" type="submit" [disabled]="!form.valid" style="border-radius: 4px;">
+          <i nz-icon nzType="save"></i> Lưu cấu hình
+        </button>
+      </div>
     </ng-template>
 
   </form>
@@ -429,9 +432,16 @@
 </div> <!-- form-builder-page-wrapper -->
 
 
-<div style="margin-top: 8px; padding: 0 24px;">
-  <h3>Cấu hình JSON:</h3>
-  <pre style="background: #f5f5f5; padding: 16px; border-radius: 4px; max-height: 400px; overflow: auto;">
+<div style="margin-top: 16px; padding: 0 24px 40px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+      <i nz-icon nzType="code" style="color: #1890ff;"></i> Cấu hình JSON:
+    </h3>
+    <button nz-button nzType="link" (click)="copyJson()" style="display: flex; align-items: center; gap: 4px;">
+      <i nz-icon nzType="copy"></i> Sao chép JSON
+    </button>
+  </div>
+  <pre style="background: #f5f5f5; padding: 16px; border-radius: 8px; max-height: 500px; overflow: auto; border: 1px solid #d9d9d9; font-size: 13px; line-height: 1.5; color: #333; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
     {{ form.value | json }}
   </pre>
 </div>

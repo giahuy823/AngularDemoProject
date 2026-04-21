@@ -222,7 +222,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
         }, {});
       this.formSubmit.emit(groupValue);
       console.log('Group submit:', group.title, groupValue);
-      
+
     }
     if (action.type === 'reset') {
       keys.forEach((k:string )=> {
@@ -250,7 +250,6 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     });
   }
 
-  // helper for template
   name(controlName: string) {
     return this.form.get(controlName);
   }

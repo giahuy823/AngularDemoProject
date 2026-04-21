@@ -58,6 +58,23 @@ export class FormbuilderService {
 
     return this.fb.group(group);
   }
+  
+  buidNestedForm(config: any): FormGroup{
+    const group: any = {};
+
+    const fields = this.getAllFields(config);
+
+    fields.forEach(field => {
+      const defaultValue = field.type === 'date' ? null : '';
+
+      group[field.key] = [
+        defaultValue,
+        this.mapValidate(field.validators)
+      ];
+    });
+
+    return this.fb.group(group);
+  }
 
   private getAllFields(config: any): any[] {
     if (!config.groups) return [];
