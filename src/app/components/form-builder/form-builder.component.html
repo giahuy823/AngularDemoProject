@@ -263,6 +263,224 @@
                 </nz-collapse>
               </div>
 
+              <!-- Danh sách SubGroups -->
+              <div formArrayName="subgroups" style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed #d9d9d9;">
+                <div style="margin-bottom: 16px; display: flex; gap: 8px;">
+                  <button nz-button nzType="dashed" type="button" (click)="addSubGroup(gIdx)">
+                    <i nz-icon nzType="plus"></i> Thêm Subgroup
+                  </button>
+                </div>
+
+                <div *ngFor="let sub of subgroups(gIdx).controls; let sgIdx = index" 
+                     [formGroupName]="sgIdx" 
+                     [id]="'subgroup-' + gIdx + '-' + sgIdx"
+                     style="margin-bottom: 24px; border: 1px solid #d9d9d9; border-radius: 8px; padding: 16px; background: #fafafa;">
+                  
+                  <!-- Header của Subgroup -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="width: 70%;">
+                      <input nz-input formControlName="title" placeholder="Tiêu đề Subgroup" style="font-weight: 500;" />
+                    </div>
+                    <button nz-button nzType="text" nzDanger (click)="removeSubGroup(gIdx, sgIdx)">
+                      <i nz-icon nzType="delete"></i> Xóa Subgroup
+                    </button>
+                  </div>
+
+                  <!-- Danh sách fields trong Subgroup -->
+                  <div formArrayName="fields">
+                    <button nz-button nzType="dashed" nzBlock type="button" (click)="addSubField(gIdx, sgIdx)" style="margin-bottom: 20px; height: 38px;">
+                      <i nz-icon nzType="plus"></i> Thêm Field vào Subgroup
+                    </button>
+
+                    <nz-collapse nzAccordion nzGhost>
+                      <nz-collapse-panel 
+                        *ngFor="let field of subFields(gIdx, sgIdx).controls; let fIdx = index" 
+                        [formGroupName]="fIdx"
+                        [nzHeader]="subPanelHeader"
+                        [nzActive]="true"
+                        [nzExtra]="subExtraTpl"
+                        style="background: #fff; border: 1px solid #e8e8e8; margin-bottom: 16px; border-radius: 4px;"
+                        [id]="'subfield-' + gIdx + '-' + sgIdx + '-' + fIdx"
+                      >
+                        <ng-template #subPanelHeader>
+                          <span style="font-weight: 600; color: #1890ff;">
+                            #{{ fIdx + 1 }}: {{ field.get('label')?.value || 'Field chưa có nhãn' }} 
+                            <small style="color: #999; font-weight: normal; margin-left: 8px;">{{ field.get('key')?.value }}</small>
+                          </span>
+                        </ng-template>
+
+                        <div nz-row [nzGutter]="16">
+                          <div nz-col [nzSpan]="6">
+                            <nz-form-item>
+                              <nz-form-label>Mã (Key)</nz-form-label>
+                              <input nz-input formControlName="key" placeholder="Ví dụ: email">
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6">
+                            <nz-form-item>
+                              <nz-form-label>Nhãn (Label)</nz-form-label>
+                              <input nz-input formControlName="label" placeholder="Ví dụ: Địa chỉ Email">
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6">
+                            <nz-form-item>
+                              <nz-form-label>Layout(colSpan)</nz-form-label>
+                              <nz-input-number style="width: 100%" formControlName="colSpan" [nzMin]="1" ></nz-input-number>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6">
+                            <nz-form-item>
+                              <nz-form-label>Loại Input</nz-form-label>
+                              <nz-select formControlName="type" style="width: 100%">
+                                  <nz-option *ngFor="let t of fieldTypes" [nzValue]="t.value" [nzLabel]="t.label"></nz-option>
+                              </nz-select>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6">
+                            <nz-form-item>
+                              <nz-form-label>Gợi ý (Placeholder)</nz-form-label>
+                              <input nz-input formControlName="placeholder" placeholder="Nhập vào...">
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                            <nz-form-item>
+                              <nz-form-label>Nguồn dữ liệu (DataSource)</nz-form-label>
+                              <nz-select formControlName="dataSource" style="width: 100%">
+                                <nz-option *ngFor="let ds of dataSources" [nzValue]="ds.value" [nzLabel]="ds.label"></nz-option>
+                              </nz-select>
+                            </nz-form-item>
+                          </div>
+                          <div nz-col [nzSpan]="6" *ngIf="field.get('type')?.value === 'select'">
+                            <nz-form-item>
+                              <nz-form-label>Phụ thuộc (Parent)</nz-form-label>
+                              <nz-select formControlName="parentKey" nzAllowClear nzPlaceHolder="Chọn field cha">
+                                <nz-option 
+                                  *ngFor="let f of subFields(gIdx, sgIdx).controls"
+                                  [nzValue]="f.get('key')?.value"
+                                  [nzLabel]="f.get('label')?.value || f.get('key')?.value"
+                                  [nzDisabled]="f === field">
+                                </nz-option>
+                              </nz-select>
+                            </nz-form-item>
+                          </div>
+                        </div>
+
+                        <div style="margin-top: 10px; padding: 12px; background: #fafafa; border-radius: 4px; border: 1px dashed #d9d9d9;">
+                          <div style="margin-bottom: 8px; font-weight: 500; font-size: 13px;">Ràng buộc dữ liệu (Validators):</div>
+                          
+                          <!-- Danh sách validators hiện có -->
+                          <div formArrayName="validators">
+                            <div *ngFor="let v of getSubValidators(gIdx, sgIdx, fIdx).controls; let j = index" [formGroupName]="j" style="margin-bottom: 8px;">
+                              <div nz-row [nzGutter]="8" nzAlign="middle">
+                                <nz-col [nzSpan]="8">
+                                  <nz-select formControlName="type" nzPlaceHolder="Chọn loại" style="width: 100%">
+                                    <nz-option *ngFor="let item of validatorTypes" [nzValue]="item.value" [nzLabel]="item.label"></nz-option>
+                                  </nz-select>
+                                </nz-col>
+                                <nz-col [nzSpan]="10">
+                                  <input *ngIf="hasValidatorValue(v.get('type')?.value)" nz-input formControlName="value" placeholder="Giá trị/Tham số">
+                                  <span *ngIf="!hasValidatorValue(v.get('type')?.value)" style="color: #ccc; font-style: italic;">(không cần tham số)</span>
+                                </nz-col>
+                                <nz-col [nzSpan]="4">
+                                  <button nz-button nzType="text" nzDanger type="button" (click)="removeSubValidator(gIdx, sgIdx, fIdx, j)">
+                                    <i nz-icon nzType="delete"></i>
+                                  </button>
+                                </nz-col>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Options cho select -->
+                          <div formArrayName="options">
+                            <div *ngFor="let option of getSubOptions(gIdx, sgIdx, fIdx).controls; let k = index" [formGroupName]="k" style="margin-bottom: 8px;">
+                              <div nz-row [nzGutter]="8" nzAlign="middle">
+                                <nz-col [nzSpan]="10">
+                                  <input nz-input formControlName="label" placeholder="Nhãn Option">
+                                </nz-col>
+                                <nz-col [nzSpan]="10">
+                                  <input nz-input formControlName="value" placeholder="Giá trị Option">
+                                </nz-col>
+                                <nz-col [nzSpan]="4">
+                                  <button nz-button nzType="text" nzDanger type="button" (click)="removeSubOption(gIdx, sgIdx, fIdx, k)">
+                                    <i nz-icon nzType="delete"></i>
+                                  </button>
+                                </nz-col>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <button nz-button nzType="link" nzSize="small" type="button" (click)="addSubValidator(gIdx, sgIdx, fIdx, 'required')">
+                            <i nz-icon nzType="plus"></i> Thêm ràng buộc (Required)
+                          </button>
+                          
+                          <button *ngIf="field.get('type')?.value === 'select'" nz-button nzType="link" type="button" (click)="addSubOption(gIdx, sgIdx, fIdx)">
+                            <i nz-icon nzType="plus"></i> Thêm option cho Select
+                          </button>
+                        </div>
+
+                        <ng-template #subExtraTpl>
+                          <i nz-icon nzType="delete" class="delete-icon" 
+                             style="color: #ff4d4f; cursor: pointer; font-size: 16px;" 
+                             (click)="removeSubField(gIdx, sgIdx, fIdx)"></i>
+                        </ng-template>
+                      </nz-collapse-panel>
+                    </nz-collapse>
+                  </div>
+
+                  <!-- Danh sách actions của Subgroup -->
+                  <div [id]="'subgroup-actions-' + gIdx + '-' + sgIdx" formArrayName="groupActions" style="margin-top: 20px;">
+                    <button nz-button nzType="dashed" nzBlock type="button" 
+                      (click)="addSubGroupAction(gIdx, sgIdx)" 
+                      style="margin-bottom: 12px;">
+                      <i nz-icon nzType="plus"></i> Thêm Action cho Subgroup
+                    </button>
+
+                    <!-- Table -->
+                    <nz-table [nzData]="subGroupActions(gIdx, sgIdx).controls"
+                      [nzFrontPagination]="false" nzSize="small" [nzBordered]="true">
+                        <thead>
+                          <tr>
+                            <th>Nhãn (Label)</th>
+                            <th>Loại</th>
+                            <th>Style</th>
+                            <th>Icon</th>
+                            <th>Đường dẫn</th>
+                            <th nzWidth="70px"></th>
+                          </tr>
+                        </thead>
+                      <tbody>
+                        <tr *ngFor="let action of subGroupActions(gIdx, sgIdx).controls; let aIdx = index" [formGroupName]="aIdx">
+                          <td>
+                            <input nz-input formControlName="label" placeholder="Ví dụ: Lưu">
+                          </td>
+                          <td>
+                            <nz-select formControlName="type" style="width: 100%">
+                              <nz-option *ngFor="let t of actionTypes" [nzValue]="t.value" [nzLabel]="t.label"></nz-option>
+                            </nz-select>
+                          </td>
+                          <td>
+                            <nz-select formControlName="style" style="width: 100%">
+                              <nz-option *ngFor="let s of buttonStyles" [nzValue]="s.value" [nzLabel]="s.label"></nz-option>
+                            </nz-select>
+                          </td>
+                          <td>
+                            <input nz-input formControlName="icon" placeholder="save">
+                          </td>
+                          <td>
+                            <input nz-input formControlName="route" placeholder="/home">
+                          </td>
+                          <td nzAlign="center">
+                            <button nz-button nzType="text" nzDanger type="button" (click)="removeSubGroupAction(gIdx, sgIdx, aIdx)">
+                              <i nz-icon nzType="delete"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </nz-table>
+                  </div>
+                </div>
+              </div>
+
           <!-- Danh sách actions của nhóm -->
             <div [id]="'group-actions-' + gIdx" formArrayName="groupActions" style="margin-top: 20px;">
 
@@ -397,9 +615,7 @@
 
     <ng-template #saveBtn>
       <div style="display: flex; gap: 8px;">
-        <button nz-button nzType="default" type="button" (click)="copyJson()" style="border-radius: 4px; display: flex; align-items: center; gap: 4px;">
-          <i nz-icon nzType="copy"></i> Copy JSON
-        </button>
+       
         <button nz-button nzType="primary" type="submit" [disabled]="!form.valid" style="border-radius: 4px;">
           <i nz-icon nzType="save"></i> Lưu cấu hình
         </button>
@@ -429,7 +645,7 @@
     </div>
   </div>
 
-</div> <!-- form-builder-page-wrapper -->
+</div> 
 
 
 <div style="margin-top: 16px; padding: 0 24px 40px;">

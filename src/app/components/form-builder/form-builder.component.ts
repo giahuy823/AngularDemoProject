@@ -128,7 +128,8 @@ export class FormBuilderComponent implements OnInit {
     const group = this.fb.group({
       title: [g.title],
       fields: this.fb.array([]),
-      groupActions: this.fb.array([])
+      groupActions: this.fb.array([]),
+      subgroups: this.fb.array([])
     });
 
     g.fields?.forEach((f: any) => {
@@ -136,6 +137,28 @@ export class FormBuilderComponent implements OnInit {
     });
 
     g.groupActions?.forEach((a: any) => {
+      (group.get('groupActions') as FormArray).push(this.createAction(a));
+    });
+
+    g.subgroups?.forEach((sg: any) => {
+      (group.get('subgroups') as FormArray).push(this.createSubGroup(sg));
+    });
+
+    return group;
+  }
+
+  private createSubGroup(sg: any): FormGroup {
+    const group = this.fb.group({
+      title: [sg.title],
+      fields: this.fb.array([]),
+      groupActions: this.fb.array([])
+    });
+
+    sg.fields?.forEach((f: any) => {
+      (group.get('fields') as FormArray).push(this.createField(f));
+    });
+
+    sg.groupActions?.forEach((a: any) => {
       (group.get('groupActions') as FormArray).push(this.createAction(a));
     });
 
@@ -213,13 +236,34 @@ export class FormBuilderComponent implements OnInit {
     return this.fields(groupIndex).at(fieldIndex).get('options') as FormArray;
   }
 
+  subgroups(groupIndex: number): FormArray {
+    return this.groups.at(groupIndex).get('subgroups') as FormArray;
+  }
+
+  subFields(groupIndex: number, subGroupIndex: number): FormArray {
+    return this.subgroups(groupIndex).at(subGroupIndex).get('fields') as FormArray;
+  }
+
+  subGroupActions(groupIndex: number, subGroupIndex: number): FormArray {
+    return this.subgroups(groupIndex).at(subGroupIndex).get('groupActions') as FormArray;
+  }
+
+  getSubValidators(groupIndex: number, subGroupIndex: number, fieldIndex: number): FormArray {
+    return this.subFields(groupIndex, subGroupIndex).at(fieldIndex).get('validators') as FormArray;
+  }
+
+  getSubOptions(groupIndex: number, subGroupIndex: number, fieldIndex: number): FormArray {
+    return this.subFields(groupIndex, subGroupIndex).at(fieldIndex).get('options') as FormArray;
+  }
+
   // ================= ADD / REMOVE =================
 
   addGroup() {
     this.groups.push(this.fb.group({
       title: [''],
       fields: this.fb.array([]),
-      groupActions: this.fb.array([])
+      groupActions: this.fb.array([]),
+      subgroups: this.fb.array([])
     }));
     this.scrollToItem(`group-${this.groups.length - 1}`);
   }
@@ -275,6 +319,79 @@ export class FormBuilderComponent implements OnInit {
 
   removeOption(groupIndex: number, fieldIndex: number, index: number) {
     this.getOptions(groupIndex, fieldIndex).removeAt(index);
+  }
+
+  addSubGroup(groupIndex: number) {
+    this.subgroups(groupIndex).push(this.fb.group({
+      title: [''],
+      fields: this.fb.array([]),
+      groupActions: this.fb.array([])
+    }));
+    this.scrollToItem(`subgroup-${groupIndex}-${this.subgroups(groupIndex).length - 1}`);
+  }
+
+  removeSubGroup(groupIndex: number, subGroupIndex: number) {
+    this.subgroups(groupIndex).removeAt(subGroupIndex);
+  }
+
+  addSubField(groupIndex: number, subGroupIndex: number) {
+    const fields = this.subFields(groupIndex, subGroupIndex);
+    fields.push(this.fb.group({
+      key: [''],
+      label: [''],
+      type: ['input'],
+      visible: [true],
+      placeholder: [''],
+      dataSource: [''],
+      parentKey: [''],
+      colSpan: [12],
+      validators: this.fb.array([]),
+      options: this.fb.array([])
+    }));
+    this.scrollToItem(`subfield-${groupIndex}-${subGroupIndex}-${fields.length - 1}`);
+  }
+
+  removeSubField(groupIndex: number, subGroupIndex: number, index: number) {
+    this.subFields(groupIndex, subGroupIndex).removeAt(index);
+  }
+
+  addSubValidator(groupIndex: number, subGroupIndex: number, fieldIndex: number, type: string) {
+    const validators = this.getSubValidators(groupIndex, subGroupIndex, fieldIndex);
+    const hasValue = ['minLength', 'maxLength', 'pattern'].includes(type);
+    validators.push(this.fb.group({
+      type: [type],
+      value: [hasValue ? '' : null]
+    }));
+  }
+
+  removeSubValidator(groupIndex: number, subGroupIndex: number, fieldIndex: number, index: number) {
+    this.getSubValidators(groupIndex, subGroupIndex, fieldIndex).removeAt(index);
+  }
+
+  addSubOption(groupIndex: number, subGroupIndex: number, fieldIndex: number) {
+    this.getSubOptions(groupIndex, subGroupIndex, fieldIndex).push(
+      this.fb.group({ label: [''], value: [''] })
+    );
+  }
+
+  removeSubOption(groupIndex: number, subGroupIndex: number, fieldIndex: number, index: number) {
+    this.getSubOptions(groupIndex, subGroupIndex, fieldIndex).removeAt(index);
+  }
+
+  addSubGroupAction(groupIndex: number, subGroupIndex: number) {
+    const actions = this.subGroupActions(groupIndex, subGroupIndex);
+    actions.push(this.createAction({
+      type: 'submit',
+      label: 'Action',
+      icon: '',
+      style: 'default',
+      route: ''
+    }));
+    this.scrollToItem(`subgroup-actions-${groupIndex}-${subGroupIndex}`);
+  }
+
+  removeSubGroupAction(groupIndex: number, subGroupIndex: number, index: number) {
+    this.subGroupActions(groupIndex, subGroupIndex).removeAt(index);
   }
 
   addGroupAction(groupIndex: number) {

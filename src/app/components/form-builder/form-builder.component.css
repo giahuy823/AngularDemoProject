@@ -101,4 +101,29 @@
     display: none;
   }
 }
+
+/* Premium Styles for Nested Groups */
+.group-title-input {
+  border: 1px solid transparent !important;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.group-title-input:hover, .group-title-input:focus {
+  background: #f0f5ff !important;
+  border-color: #adc6ff !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Animation for adding items */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+nz-collapse-panel {
+  display: block;
+  animation: fadeIn 0.4s ease-out;
+}
+
 
