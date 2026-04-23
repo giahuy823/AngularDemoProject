@@ -15,10 +15,14 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { StudentRoutingModule } from '../students/student-routing.module';
 import { RouterModule } from '@angular/router';
 import { AppTableComponent } from './app-table/app-table.component';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { AppDynamicGroupComponent } from './app-dynamic-group/app-dynamic-group.component';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 
 
 @NgModule({
-  declarations: [AppDynamicComponent,AppTableComponent],
+  declarations: [AppDynamicComponent,AppTableComponent, AppDynamicGroupComponent],
   exports: [AppDynamicComponent,AppTableComponent],
   imports: [
     CommonModule,
@@ -33,6 +37,9 @@ import { AppTableComponent } from './app-table/app-table.component';
     NzSelectModule,
     NzCardModule,
     NzIconModule,
+    NzUploadModule,
+    NzDatePickerModule,
+    NzTimePickerModule,
     StudentRoutingModule
 ]
 })

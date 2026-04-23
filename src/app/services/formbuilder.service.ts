@@ -4,6 +4,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormFromJson, Validator } from '../models/form.model';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -41,6 +42,22 @@ export class FormbuilderService {
     return this.http.put(`${this.privateUrl}/${id}`, payload);
   }
 
+  defaultValue(field:any){
+    switch(field.type){
+      case "date":
+        return null;
+      case "number":
+        return 0;
+     case "select":
+        return field.options?.length ? field.options[0].value : null;
+      case "timeRange":
+        return [null,null];
+      case "upload":
+        return [];
+      default:
+        return "";
+    }
+  }
   
   buildForm(config: any): FormGroup {
     const group: any = {};
@@ -48,7 +65,7 @@ export class FormbuilderService {
     const fields = this.getAllFields(config);
 
     fields.forEach(field => {
-      const defaultValue = field.type === 'date' ? null : '';
+      const defaultValue = this.defaultValue(field);
 
       group[field.key] = [
         defaultValue,
@@ -57,24 +74,46 @@ export class FormbuilderService {
     });
 
     return this.fb.group(group);
+  }
+
+  toKey(value: string) {
+    return value.trim().toLowerCase().replace(/\s+/g, '_');
   }
   
-  buidNestedForm(config: any): FormGroup{
-    const group: any = {};
+  buildFormLevel2(config:any):FormGroup {
+    const root : any = this.fb.group({});
 
-    const fields = this.getAllFields(config);
+    config.groups?.forEach((g:any)=> {
+      const groupControl = this.fb.group({})
 
-    fields.forEach(field => {
-      const defaultValue = field.type === 'date' ? null : '';
+      g.fields?.forEach((f: any) => {
+          groupControl.addControl(
+            f.key,
+            this.fb.control(
+              this.defaultValue(f),
+              this.mapValidate(f.validators)
+            )
+          );
+        });
 
-      group[field.key] = [
-        defaultValue,
-        this.mapValidate(field.validators)
-      ];
-    });
-
-    return this.fb.group(group);
+      g.subgroups?.forEach((sg:any)=>{
+        const subGroupControl = this.fb.group({});
+        sg.fields?.forEach((sf:any)=>{
+          subGroupControl.addControl(
+            sf.key,
+            this.fb.control(
+              this.defaultValue(sf),
+              this.mapValidate(sf.validators)
+            )
+          )
+        })
+        groupControl.addControl(this.toKey(sg.title),subGroupControl);
+      });
+     root.addControl(this.toKey(this.toKey(g.title)), groupControl);
+     });
+    return root;
   }
+
 
   private getAllFields(config: any): any[] {
     if (!config.groups) return [];

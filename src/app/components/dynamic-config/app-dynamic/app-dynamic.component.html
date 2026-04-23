@@ -1,86 +1,206 @@
 <h1 class="header">{{ configRoot.title }}</h1>
 
 <form nz-form *ngIf="form" [formGroup]="form" nzLayout="vertical">
-  <div nz-row [nzGutter]="[16, 16]" class="form-row-container">
-    
+
+  <div nz-row [nzGutter]="[16, 16]">
+
     <ng-container *ngFor="let group of configRoot.groups">
+
       <div nz-col [nzXs]="24" [nzLg]="12" class="group-col">
-        <nz-card
-          [nzTitle]="group.title"
-          [nzBordered]="false"
-          class="dynamic-group-card"
-        >
-          <div nz-row [nzGutter]="group.layout?.spacing || 16">
-            <ng-container *ngFor="let field of group.fields">
-              <div
-                nz-col
-                [nzXs]="24"
-                [nzMd]="field.colSpan || 24"
-                *ngIf="field.visible"
-              >
-                <nz-form-item>
-                  <nz-form-label [nzRequired]="getRequiredValidator(field)" >
-                    {{ field.label }}
-                  </nz-form-label>
-                  <nz-form-control
-                    [nzErrorTip]="(name(field.key)?.touched || name(field.key)?.dirty) ? getErrorMessage(field.key) : ''"
-                  >
-                    <input
-                      *ngIf="field.type === 'input'"
-                      nz-input
-                      [formControlName]="field.key"
-                      [placeholder]="field.placeholder || ''"
-                    />
-                    <input
-                      *ngIf="field.type === 'number'"
-                      nz-input
-                      type="number"
-                      [formControlName]="field.key"
-                      [placeholder]="field.placeholder || ''"
-                    />
-                    <input
-                      *ngIf="field.type === 'date'"
-                      nz-input
-                      [formControlName]="field.key"
-                      type="date"
-                    />
-                    <nz-select
-                      *ngIf="field.type === 'select'"
-                      [formControlName]="field.key"
-                      [nzPlaceHolder]="field.placeholder || ''"
-                      [nzLoading]="field.loading"
-                      (nzOpenChange)="onSelectOpen(field)"
-                      nzAllowClear
-                      nzShowSearch
-                      class="full-width-select"
-                    >
-                      <nz-option
-                        *ngFor="let opt of field.options"
-                        [nzLabel]="opt.label"
-                        [nzValue]="opt.value"
-                      ></nz-option>
-                    </nz-select>
-                  </nz-form-control>
-                </nz-form-item>
-              </div>
+
+        <nz-card [nzTitle]="group.title" class="dynamic-group-card">
+
+          <!-- GROUP FORM -->
+          <div [formGroupName]="toKey(group.title)">
+
+            <!-- ================= GROUP FIELDS ================= -->
+            <div nz-row [nzGutter]="16">
+
+              <ng-container *ngFor="let field of group.fields">
+
+                <div nz-col [nzSpan]="field.colSpan || 24" *ngIf="field.visible">
+
+                  <nz-form-item>
+
+                    <nz-form-label [nzRequired]="getRequiredValidator(field)">
+                      {{ field.label }}
+                    </nz-form-label>
+
+                    <nz-form-control
+                      [nzErrorTip]="(getControl(group, field.key)?.touched || getControl(group, field.key)?.dirty) 
+                        ? getErrorMessage(getControl(group, field.key)) : ''">
+
+                      <!-- INPUT -->
+                      <input
+                        *ngIf="field.type === 'input'"
+                        nz-input
+                        [formControlName]="field.key"
+                        [placeholder]="field.placeholder"
+                      />
+
+                      <!-- NUMBER -->
+                      <input
+                        *ngIf="field.type === 'number'"
+                        nz-input
+                        type="number"
+                        [formControlName]="field.key"
+                      />
+
+                      <!-- DATE -->
+                      <input
+                        *ngIf="field.type === 'date'"
+                        nz-input
+                        type="date"
+                        [formControlName]="field.key"
+                      />
+
+                      <!-- TIME RANGE -->
+                      <nz-time-picker
+                        *ngIf="field.type === 'timeRange'"
+                        [formControlName]="field.key"
+                        nzShowTime>
+                      </nz-time-picker>
+
+                      <!-- SELECT -->
+                      <nz-select
+                        *ngIf="field.type === 'select'"
+                        [formControlName]="field.key"
+                        [nzPlaceHolder]="field.placeholder"
+                        [nzLoading]="field.loading"
+                        (nzOpenChange)="onSelectOpen(field)"
+                        nzAllowClear
+                        nzShowSearch>
+
+                        <nz-option
+                          *ngFor="let opt of field.options"
+                          [nzLabel]="opt.label"
+                          [nzValue]="opt.value">
+                        </nz-option>
+
+                      </nz-select>
+
+                      <!-- UPLOAD -->
+                  
+
+                    </nz-form-control>
+
+                  </nz-form-item>
+
+                </div>
+
+              </ng-container>
+
+            </div>
+
+            <!-- ================= SUBGROUP ================= -->
+            <ng-container *ngFor="let sg of group.subgroups">
+
+              <nz-card
+                *ngIf="sg"
+                [nzTitle]="sg.title"
+                nzType="inner"
+                style="margin-top: 16px;">
+
+                <div [formGroupName]="toKey(sg.title)">
+
+                  <div nz-row [nzGutter]="16">
+
+                    <ng-container *ngFor="let field of sg.fields">
+
+                      <div nz-col [nzSpan]="field.colSpan || 24" *ngIf="field.visible">
+
+                        <nz-form-item>
+
+                          <nz-form-label [nzRequired]="getRequiredValidator(field)">
+                            {{ field.label }}
+                          </nz-form-label>
+
+                          <nz-form-control
+                            [nzErrorTip]="(getControl(group, field.key, sg)?.touched || getControl(group, field.key, sg)?.dirty) 
+                              ? getErrorMessage(getControl(group, field.key, sg)) : ''">
+
+                            <!-- INPUT -->
+                            <input
+                              *ngIf="field.type === 'input'"
+                              nz-input
+                              [formControlName]="field.key"
+                            />
+
+                            <!-- NUMBER -->
+                            <input
+                              *ngIf="field.type === 'number'"
+                              nz-input
+                              type="number"
+                              [formControlName]="field.key"
+                            />
+
+                            <!-- DATE -->
+                            <input
+                              *ngIf="field.type === 'date'"
+                              nz-input
+                              type="date"
+                              [formControlName]="field.key"
+                            />
+
+                            <!-- TIME RANGE -->
+                            <nz-time-picker
+                              *ngIf="field.type === 'timeRange'"
+                              [formControlName]="field.key"
+                              nzShowTime>
+                            </nz-time-picker>
+
+                            <!-- SELECT -->
+                            <nz-select
+                              *ngIf="field.type === 'select'"
+                              [formControlName]="field.key"
+                              [nzPlaceHolder]="field.placeholder"
+                              [nzLoading]="field.loading"
+                              (nzOpenChange)="onSelectOpen(field)"
+                              nzShowSearch
+                              nzAllowClear>
+                              <nz-option
+                                *ngFor="let opt of field.options"
+                                [nzLabel]="opt.label"
+                                [nzValue]="opt.value">
+                              </nz-option>
+                            </nz-select>
+
+                          </nz-form-control>
+
+                        </nz-form-item>
+
+                      </div>
+
+                    </ng-container>
+
+                  </div>
+
+                </div>
+
+              </nz-card>
+
             </ng-container>
+
           </div>
 
+          <!-- ================= GROUP ACTION ================= -->
           <div class="group-actions-wrapper">
             <button
               *ngFor="let action of group.groupActions"
               nz-button
               [nzType]="action.style || 'default'"
-              (click)="onGroupAction(action, group)"
-              class="action-btn"
-            >
+              (click)="onGroupAction(action, group)">
               <span *ngIf="action.icon" nz-icon [nzType]="action.icon"></span>
               {{ action.label }}
             </button>
           </div>
+
         </nz-card>
+
       </div>
+
     </ng-container>
 
   </div>
+
 </form>

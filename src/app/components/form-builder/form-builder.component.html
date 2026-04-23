@@ -221,7 +221,7 @@
                           <button nz-button nzType="text" nzDanger type="button" (click)="removeValidator(gIdx, fIdx, j)">
                             <i nz-icon nzType="delete"></i>
                           </button>
-                        </nz-col>
+                        </nz-col>y
                       </div>
                     </div>
                   </div>
@@ -635,9 +635,20 @@
         <li class="toc-item" (click)="scrollToItem('form-config-header')">
           <i nz-icon nzType="setting"></i> Cấu hình chung
         </li>
-        <li *ngFor="let group of groups.controls; let i = index" class="toc-item" (click)="scrollToItem('group-' + i)">
-          <i nz-icon nzType="block"></i> {{ group.get('title')?.value || 'Nhóm ' + (i + 1) }}
-        </li>
+        
+        <ng-container *ngFor="let group of groups.controls; let i = index">
+          <li class="toc-item group-toc" (click)="scrollToItem('group-' + i)">
+            <i nz-icon nzType="block"></i> {{ group.get('title')?.value || 'Nhóm ' + (i + 1) }}
+          </li>
+          
+          <ng-container *ngIf="subgroups(i).length > 0">
+            <li *ngFor="let sub of subgroups(i).controls; let j = index" class="toc-item sub-toc-item" (click)="scrollToItem('subgroup-' + i + '-' + j)">
+              <div class="toc-connector"></div>
+              <i nz-icon nzType="appstore"></i> {{ sub.get('title')?.value || 'Subgroup ' + (j + 1) }}
+            </li>
+          </ng-container>
+        </ng-container>
+
         <li class="toc-item" (click)="scrollToItem('global-actions-tab')">
           <i nz-icon nzType="rocket"></i> Nút chức năng
         </li>

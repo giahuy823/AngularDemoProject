@@ -5,7 +5,7 @@ import { FormbuilderService } from 'src/app/services/formbuilder.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { HttpClient } from '@angular/common/http';
 import { switchMap, tap } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+
 @Component({
   selector: 'app-dynamic',
   templateUrl: './app-dynamic.component.html',
@@ -26,45 +26,111 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   form!: FormGroup;
   prevValues: any = {};
 
-  ngOnInit(): void {}
+  allFieldsCached: any[] = [];
+  controlPathMap: Record<string, string> = {};
+  fieldMap: Record<string, any> = {};
 
+  ngOnInit(): void { }
+
+  buildCache() {
+    this.allFieldsCached = [];
+    this.controlPathMap = {};
+    this.fieldMap = {};
+    if (!this.configRoot?.groups) return;
+
+    for (const g of this.configRoot.groups) {
+      const gKey = this.toKey(g.title);
+      if (g.fields) {
+        for (const f of g.fields) {
+          this.allFieldsCached.push(f);
+          this.controlPathMap[f.key] = `${gKey}.${f.key}`;
+          this.fieldMap[f.key] = f;
+        }
+      }
+      for (const sg of g.subgroups || []) {
+        const sgKey = this.toKey(sg.title);
+        if (sg.fields) {
+          for (const f of sg.fields) {
+            this.allFieldsCached.push(f);
+            this.controlPathMap[f.key] = `${gKey}.${sgKey}.${f.key}`;
+            this.fieldMap[f.key] = f;
+          }
+        }
+      }
+    }
+  }
 
   getAllFields(): any[] {
-    return this.configRoot?.groups?.flatMap((g: any) => g.fields) || [];
+    return this.allFieldsCached;
   }
-  
+
   setupFormSubscription() {
-    if (!this.form) return;
+      if (!this.form) return;
 
-    this.form.valueChanges.subscribe(value => {
+      this.form.valueChanges.subscribe(() => {
+        const fields = this.getAllFields();
 
-      console.log('Form value changed:', value);
-      const fields = this.getAllFields();
-      fields.forEach((field: any) => {
+        fields.forEach((field: any) => {
+          if (!field.parentKey) return;
 
-        console.log(`Checking field: ${field.key}, parentKey: ${field.parentKey}`);
-        if (!field.parentKey) return;
+          const parentValue = this.findValueByKey(field.parentKey);
+          const prevParentValue = this.prevValues[field.parentKey];
 
-        const parentValue = value[field.parentKey];
-        const prevParentValue = this.prevValues[field.parentKey];
+          if (parentValue !== prevParentValue) {
+            this.setValueByKey(field.key, null);
+            this.clearOptions(field.key);
+          } else if (!parentValue && this.getControlByKey(field.key)?.value !== null) {
+            this.setValueByKey(field.key, null);
+            this.clearOptions(field.key);
+          }
 
-        if (parentValue !== prevParentValue) {
-          this.form.patchValue({ [field.key]: null }, { emitEvent: false });
-          this.clearOptions(field.key);
-        }
-
-        if (!parentValue) {
-          this.form.patchValue({ [field.key]: null }, { emitEvent: false });
-          this.clearOptions(field.key);
-        }
+          this.prevValues[field.parentKey] = parentValue;
+        });
       });
+    }
 
-      this.prevValues = { ...value };
+  toKey(value: string) {
+    return value.trim().toLowerCase().replace(/\s+/g, '_');
+  }
+
+  getControlByKey(key: string): any {
+    const path = this.controlPathMap[key];
+    return path ? this.form.get(path) : null;
+  }
+
+  findValueByKey(key: string): any {
+    return this.getControlByKey(key)?.value || null;
+  }
+
+  setValueByKey(key: string, value: any) {
+    const control = this.getControlByKey(key);
+    if (control && control.value !== value) {
+      control.setValue(value, { emitEvent: false });
+    }
+  }
+
+  patchDataToForm(data: any) {
+    if (!data || !this.form) return;
+    
+    this.form.patchValue(data, { emitEvent: false });
+
+    Object.keys(data).forEach(key => {
+      const control = this.getControlByKey(key);
+      if (control && control.value !== data[key]) {
+        control.setValue(data[key], { emitEvent: false });
+      }
+    });
+
+    const fields = this.getAllFields();
+    fields.forEach((field: any) => {
+      if (field.parentKey) {
+        this.prevValues[field.parentKey] = this.findValueByKey(field.parentKey);
+      }
     });
   }
-
+  
   clearOptions(fieldKey: string) {
-    const field = this.getAllFields().find((f: any) => f.key === fieldKey);
+    const field = this.fieldMap[fieldKey];
     if (field) field.options = [];
   }
 
@@ -78,16 +144,17 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['configRoot'] && this.configRoot) {
-      this.form = this.fbService.buildForm(this.configRoot);
+      this.buildCache();
+      this.form = this.fbService.buildFormLevel2(this.configRoot);
       this.setupFormSubscription();
 
-      if (this.data) {
-        this.form.patchValue(this.data);
+      if (this.data && !changes['data']) {
+        this.patchDataToForm(this.data);
       }
     }
 
     if (changes['data'] && this.form) {
-      this.form.reset();
+      this.form.reset(undefined, { emitEvent: false });
       this.prevValues = {};
 
       const fields = this.getAllFields();
@@ -111,31 +178,31 @@ export class AppDynamicComponent implements OnInit, OnChanges {
       };
 
       if (!cityField || !districtField) {
-        this.form.patchValue(patchedData);
+        this.patchDataToForm(patchedData);
         return;
       }
 
       this.loadDataSource(cityField).pipe(
         tap(res => {
           cityField.options = res.map((i: any) => ({ label: i.name, value: i.code.toString() }));
-          this.form.patchValue({ ...patchedData, district: null });
+          this.patchDataToForm({ ...patchedData, district: null });
         }),
-     
+
         switchMap(() => this.loadDataSource({ ...districtField, parentKey: 'city' }))
       ).subscribe(res2 => {
         districtField.options = res2.districts.map((i: any) => ({ label: i.name, value: i.code.toString() }));
-        this.form.patchValue({ district: patchedData.district });
+        this.patchDataToForm({ district: patchedData.district });
       });
     }
   }
 
   onSelectOpen(field: any) {
-    if (field.parentKey && !this.form.get(field.parentKey)?.value) {
+    const parentValue = field.parentKey ? this.findValueByKey(field.parentKey) : null;
+
+    if (field.parentKey && !parentValue) {
       this.msgservice.warning('Vui lòng chọn trước');
       return;
     }
-
-    const parentValue = this.form.get(field.parentKey)?.value;
 
     if (field.lastParentValue !== parentValue) {
       field.options = [];
@@ -146,27 +213,26 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
       this.loadDataSource(field).subscribe({
         next: (res: any) => {
-          let options: any[] = res.districts || res.wards || res;
+          const options = res.districts || res.wards || res;
 
-          field.options = options.map((item: any) => ({
-            label: item.name,
-            value: item.code.toString(),
+          field.options = options.map((i: any) => ({
+            label: i.name,
+            value: i.code.toString()
           }));
 
           field.lastParentValue = parentValue;
           field.loading = false;
         },
         error: () => {
-          this.msgservice.error('Không thể tải dữ liệu');
+          this.msgservice.error('Load fail');
           field.loading = false;
         }
       });
     }
   }
 
-  getRequiredValidator(field: any): boolean 
-  { 
-    return field.validators?.some((v: any) => v.type === 'required'); 
+  getRequiredValidator(field: any): boolean {
+    return field.validators?.some((v: any) => v.type === 'required');
   }
 
   loadDataSource(field: any) {
@@ -177,12 +243,12 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     }
 
     if (field.dataSource === 'districts') {
-      const code = this.form.get(field.parentKey)?.value;
+      const code = this.findValueByKey(field.parentKey);
       return this.http.get<any>(`${baseUrl}/p/${code}?depth=2`);
     }
 
     if (field.dataSource === 'wards') {
-      const code = this.form.get(field.parentKey)?.value;
+      const code = this.findValueByKey(field.parentKey);
       return this.http.get<any>(`${baseUrl}/d/${code}?depth=2`);
     }
 
@@ -201,39 +267,43 @@ export class AppDynamicComponent implements OnInit, OnChanges {
   }
 
   onGroupAction(action: any, group: any) {
+    //Form-Group level 2
+    const groupKey = this.toKey(group.title);
+    const groupForm = this.form.get(groupKey) as FormGroup;
 
-    
-    
-    const keys = group.fields.map((f: any) => f.key);
-    
-    if (action.type === 'submit') {
+    if (!groupForm) return;
+      if (action.type === 'submit') {
 
-      if (!this.isGroupValid(group)) {
-        this.markGroupTouched(group);
-        this.msgservice.error(`Group "${group.title}" invalid`);
-        return;
-      }
-      
-      const groupValue = Object.keys(this.form.value)
-        .filter(k => keys.includes(k))
-        .reduce((obj: any, k) => {
-          obj[k] = this.form.value[k];
-          return obj;
-        }, {});
-      this.formSubmit.emit(groupValue);
-      console.log('Group submit:', group.title, groupValue);
-
-    }
-    if (action.type === 'reset') {
-      keys.forEach((k:string )=> {
-        const control = this.form.get(k);
-        if (control) {
-          control.reset(); 
+        if (groupForm.invalid) {
+          console.log(groupForm.value);
+          this.markGroupTouched(groupForm);
+          this.msgservice.error(`Group "${group.title}" invalid`);
+          return;
         }
-      });
-    }
-  }
 
+        const value = groupForm.value;
+
+        this.formSubmit.emit(value);
+
+        console.log('Group submit:', group.title, value);
+      }
+      if (action.type === 'reset') {
+        groupForm.reset();
+      }
+    }
+
+  markGroupTouched(group: FormGroup) {
+    Object.values(group.controls).forEach((control: any) => {
+
+      if (control instanceof FormGroup) {
+        this.markGroupTouched(control); 
+      } else {
+        control.markAsTouched();
+      }
+
+    });
+  }
+    
   isGroupValid(group: any): boolean {
     const keys = group.fields.map((f: any) => f.key);
 
@@ -243,21 +313,19 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     });
   }
 
-  markGroupTouched(group: any) {
-    group.fields.forEach((f: any) => {
-      const control = this.form.get(f.key);
-      control?.markAsTouched();
-    });
+  getControl(group: any, fieldKey: string, subGroup?: any) {
+    const groupKey = this.toKey(group.title);
+
+    if (subGroup) {
+      const subKey = this.toKey(subGroup.title);
+      return this.form.get(`${groupKey}.${subKey}.${fieldKey}`);
+    }
+
+    return this.form.get(`${groupKey}.${fieldKey}`);
   }
 
-  name(controlName: string) {
-    return this.form.get(controlName);
-  }
-
-  getErrorMessage(controlName: string): string {
-    const ctrl = this.name(controlName);
+  getErrorMessage(ctrl: any): string {
     if (!ctrl) return '';
-
     if (ctrl.hasError('required')) return 'Required';
     if (ctrl.hasError('maxlength')) return 'Max length exceeded';
     if (ctrl.hasError('minlength')) return 'Min length not reached';

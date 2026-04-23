@@ -435,7 +435,7 @@ export class FormBuilderComponent implements OnInit {
   }
 
   scrollToItem(id: string) {
-    if (id.startsWith('group-')) {
+    if (id.startsWith('group-') || id.startsWith('subgroup-')) {
       this.selectedIndex = 0;
     } else if (id.includes('global-actions')) {
       this.selectedIndex = 1;
