@@ -1,0 +1,25 @@
+<div class="dynamic-form-wrapper" style="padding: 24px;">
+  <div style="margin-bottom: 24px;">
+    <nz-select 
+      [(ngModel)]="selectedFormId" 
+      (ngModelChange)="onFormSelect($event)" 
+      nzPlaceHolder="-- Chọn form --"
+      style="width: 300px;"
+      nzShowSearch
+      nzAllowClear>
+      <nz-option *ngFor="let f of formList" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+    </nz-select>
+  </div>
+
+  <nz-divider></nz-divider>
+
+  <div *ngIf="configRoot; else emptyState">
+    <app-dynamic [configRoot]="configRoot" (formSubmit)="onFormSubmit($event)"></app-dynamic>
+  </div>
+  
+  <ng-template #emptyState>
+    <div style="text-align: center; color: #999; margin-top: 50px;">
+     <div>Lỗi</div>
+    </div>
+  </ng-template>
+</div>

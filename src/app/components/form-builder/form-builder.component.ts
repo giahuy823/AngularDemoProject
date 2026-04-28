@@ -516,4 +516,23 @@ export class FormBuilderComponent implements OnInit {
       this.message.error('Lỗi khi sao chép: ' + err);
     });
   }
+
+  showImportModal = false;
+  pastedJson = '';
+
+  importJson() {
+    if (!this.pastedJson || !this.pastedJson.trim()) {
+      this.message.warning('Vui lòng nhập cấu hình JSON!');
+      return;
+    }
+    try {
+      const config = JSON.parse(this.pastedJson);
+      this.patchFullForm(config);
+      this.showImportModal = false;
+      this.message.success('Import cấu hình JSON thành công!');
+      this.pastedJson = '';
+    } catch (e) {
+      this.message.error('JSON không hợp lệ. Vui lòng kiểm tra lại!');
+    }
+  }
 }

@@ -115,7 +115,9 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     this.form.patchValue(data, { emitEvent: false });
 
     Object.keys(data).forEach(key => {
+      console.log('Patching key:', key, 'with value:', data[key]);
       const control = this.getControlByKey(key);
+    
       if (control && control.value !== data[key]) {
         control.setValue(data[key], { emitEvent: false });
       }
@@ -262,7 +264,27 @@ export class AppDynamicComponent implements OnInit, OnChanges {
       console.log(this.form.value);
     } else {
       this.form.markAllAsTouched();
+      console.log(this.form.value);
       this.msgservice.error('Form invalid');
+    }
+  }
+  
+  onAction(action: any) {
+    if (action.type === 'submit') {
+      this.onSubmit();
+    } else if (action.type === 'reset') {
+      this.form.reset(undefined, { emitEvent: false });
+      this.prevValues = {};
+      const fields = this.getAllFields();
+      fields.forEach((field: any) => {
+        if (field.parentKey) {
+          field.options = [];
+          field.lastParentValue = undefined;
+        }
+      });
+      console.log('Root form reset');
+    } else {
+      console.log('Unhandled root action:', action);
     }
   }
 
@@ -273,7 +295,6 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
     if (!groupForm) return;
       if (action.type === 'submit') {
-
         if (groupForm.invalid) {
           console.log(groupForm.value);
           this.markGroupTouched(groupForm);
@@ -282,7 +303,6 @@ export class AppDynamicComponent implements OnInit, OnChanges {
         }
 
         const value = groupForm.value;
-
         this.formSubmit.emit(value);
 
         console.log('Group submit:', group.title, value);
@@ -293,6 +313,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
     }
 
   markGroupTouched(group: FormGroup) {
+
     Object.values(group.controls).forEach((control: any) => {
 
       if (control instanceof FormGroup) {
@@ -303,16 +324,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
 
     });
   }
-    
-  isGroupValid(group: any): boolean {
-    const keys = group.fields.map((f: any) => f.key);
-
-    return keys.every((key: string) => {
-      const control = this.form.get(key);
-      return control && control.valid;
-    });
-  }
-
+  
   getControl(group: any, fieldKey: string, subGroup?: any) {
     const groupKey = this.toKey(group.title);
 

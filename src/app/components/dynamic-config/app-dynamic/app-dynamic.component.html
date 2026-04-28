@@ -1,14 +1,18 @@
-<h1 class="header">{{ configRoot.title }}</h1>
+<div class="header-container" routerLink="/students/student-add">
+  <span nz-icon nzType="arrow-left" nzTheme="outline" class="header-back-icon"></span>
+  <h2 class="header-title">{{ configRoot.title }}</h2>
+</div>
 
-<form nz-form *ngIf="form" [formGroup]="form" nzLayout="vertical">
+<form nz-form *ngIf="form" [formGroup]="form" nzLayout="vertical" class="dynamic-form-container">
 
   <div nz-row [nzGutter]="[16, 16]">
 
     <ng-container *ngFor="let group of configRoot.groups">
 
-      <div nz-col [nzXs]="24" [nzLg]="12" class="group-col">
+      <div nz-col [nzSpan]="24" class="group-col">
 
-        <nz-card [nzTitle]="group.title" class="dynamic-group-card">
+        <div class="dynamic-group-section">
+          <h3 class="group-section-title">{{ group.title }}</h3>
 
           <!-- GROUP FORM -->
           <div [formGroupName]="toKey(group.title)">
@@ -80,6 +84,13 @@
                       </nz-select>
 
                       <!-- UPLOAD -->
+                       <nz-upload
+                       *ngIf="field.type === 'upload'"
+                       nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+                         <button nz-button nzType="primary" nzGhost type="button">
+                           <span nz-icon nzType="upload"></span>Upload
+                         </button>
+                       </nz-upload>
                   
 
                     </nz-form-control>
@@ -95,13 +106,14 @@
             <!-- ================= SUBGROUP ================= -->
             <ng-container *ngFor="let sg of group.subgroups">
 
-              <nz-card
-                *ngIf="sg"
-                [nzTitle]="sg.title"
-                nzType="inner"
-                style="margin-top: 16px;">
+              <nz-collapse *ngIf="sg" [nzBordered]="false" class="subgroup-collapse">
+                <nz-collapse-panel 
+                  [nzHeader]="sg.title" 
+                  [nzActive]="sg.active !== false"
+                  (nzActiveChange)="sg.active = $event"
+                  class="subgroup-panel">
 
-                <div [formGroupName]="toKey(sg.title)">
+                <div [formGroupName]="toKey(sg.title)" class="subgroup-content">
 
                   <div nz-row [nzGutter]="16">
 
@@ -142,12 +154,12 @@
                               [formControlName]="field.key"
                             />
 
-                            <!-- TIME RANGE -->
-                            <nz-time-picker
+                          <nz-range-picker
                               *ngIf="field.type === 'timeRange'"
                               [formControlName]="field.key"
-                              nzShowTime>
-                            </nz-time-picker>
+                              nzShowTime
+                             >
+                            </nz-range-picker>
 
                             <!-- SELECT -->
                             <nz-select
@@ -165,6 +177,15 @@
                               </nz-option>
                             </nz-select>
 
+                            <nz-upload
+                             *ngIf="field.type === 'upload'"
+                             nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                             >
+                              <button nz-button nzType="primary" nzGhost type="button">
+                                <span nz-icon nzType="upload"></span>Upload
+                              </button>
+                            </nz-upload>
+
                           </nz-form-control>
 
                         </nz-form-item>
@@ -177,7 +198,8 @@
 
                 </div>
 
-              </nz-card>
+                </nz-collapse-panel>
+              </nz-collapse>
 
             </ng-container>
 
@@ -195,11 +217,22 @@
             </button>
           </div>
 
-        </nz-card>
+        </div>
 
       </div>
 
     </ng-container>
+
+    <div nz-col [nzSpan]="24">
+      <div class="root-actions-wrapper">
+        <ng-container *ngFor="let action of configRoot.actions">
+          <button nz-button [nzType]="action.style || 'default'" (click)="onAction(action)">
+            <span *ngIf="action.icon" nz-icon [nzType]="action.icon"></span>
+            {{ action.label }}
+          </button>
+        </ng-container>
+      </div>
+    </div>
 
   </div>
 

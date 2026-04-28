@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule } from '@angular/forms';
 import { StudentRoutingModule } from './student-routing.module';
 import { StudentAddComponent } from './student-add/student-add.component';
 import { StudentListComponent } from './student-list/student-list.component';
@@ -20,11 +20,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppDynamicComponent } from '../dynamic-config/app-dynamic/app-dynamic.component';
 import { DynamicformModule } from '../dynamic-config/dynamicform.module';
 import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
+import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 @NgModule({
   declarations: [
     StudentAddComponent,
     StudentListComponent,
     StudentEditComponent,
+    DynamicFormComponent,
     
   ],
   imports: [
@@ -42,6 +45,8 @@ import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
     NzIconModule,
     NzSpinModule,
     NzCardModule,
+    NzDividerModule,
+    FormsModule
   ]
   //  exports: [   
   //   StudentListComponent,

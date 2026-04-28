@@ -33,14 +33,16 @@ import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { AppTableComponent } from './components/dynamic-config/app-table/app-table.component';
+
 registerLocaleData(en);
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    FormBuilderComponent,
+    FormBuilderComponent
   ],
   imports: [
     BrowserModule,
@@ -66,7 +68,8 @@ registerLocaleData(en);
     NzTableModule,
     NzIconModule,
     NzMessageModule,
-    NzSpaceModule
+    NzSpaceModule,
+    NzModalModule
 ],
   providers: [
     { provide: NZ_I18N, useValue: en_US }

@@ -8,7 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzMessageModule } from 'ng-zorro-antd/message';
-import  { NzCardModule } from 'ng-zorro-antd/card';
+import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -17,12 +17,13 @@ import { RouterModule } from '@angular/router';
 import { AppTableComponent } from './app-table/app-table.component';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { AppDynamicGroupComponent } from './app-dynamic-group/app-dynamic-group.component';
+
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 
 
 @NgModule({
-  declarations: [AppDynamicComponent,AppTableComponent, AppDynamicGroupComponent],
+  declarations: [AppDynamicComponent,AppTableComponent],
   exports: [AppDynamicComponent,AppTableComponent],
   imports: [
     CommonModule,
@@ -37,6 +38,7 @@ import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
     NzSelectModule,
     NzCardModule,
     NzIconModule,
+    NzCollapseModule,
     NzUploadModule,
     NzDatePickerModule,
     NzTimePickerModule,

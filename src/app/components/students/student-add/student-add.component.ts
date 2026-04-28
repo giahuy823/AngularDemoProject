@@ -9,8 +9,9 @@ import { FormFromJson } from 'src/app/models/form.model';
   selector: 'app-student-add',
    template: `
     <app-dynamic
-      [configRoot]="configRoot"
-      (formSubmit)="handleSubmit($event)"
+     *ngIf="configRoot"
+     [configRoot]="configRoot"
+    (formSubmit)="handleSubmit($event)"
     ></app-dynamic>
   `
 })
@@ -24,7 +25,7 @@ export class StudentAddComponent implements OnInit{
 
   configRoot!: FormFromJson;
   ngOnInit(): void {
-        this.fbService.loadConFigFromDb('student','management','testSubGroups').subscribe((config) => {
+        this.fbService.loadConFigFromDb('student','management','Edit_Booking').subscribe((config) => {
             console.log(config);
             this.configRoot = config;
         });
