@@ -6,6 +6,9 @@
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+  background: transparent;
+  padding: 0 0 16px 0;
+  border-bottom: 1px solid #e8e8e8;
 }
 
 .header-back-icon {
@@ -13,112 +16,159 @@
   cursor: pointer;
   margin-right: 12px;
   color: #595959;
+  transition: color 0.3s;
+}
+
+.header-back-icon:hover {
+  color: #1890ff;
 }
 
 .header-title {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
   color: #262626;
 }
 
 .dynamic-form-container {
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 80px; 
 }
+
 
 .group-col {
   display: flex;
   flex-direction: column;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
 }
 
 .group-section-title {
   font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
   color: #262626;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 8px;
 }
 
+
 .subgroup-collapse {
-  background: transparent;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
   margin-top: 16px;
 }
 
-.subgroup-panel {
-  background: #fafafa;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
-  margin-bottom: 8px;
+::ng-deep .subgroup-collapse > .ant-collapse-item > .ant-collapse-header {
   font-weight: 600;
+  font-size: 14px;
+  color: #262626;
+  padding: 12px 16px;
+  background-color: #fafafa;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.subgroup-panel {
+  background: transparent;
+  border: none;
+}
+
+::ng-deep .subgroup-collapse > .ant-collapse-item {
+  border-bottom: none;
 }
 
 .subgroup-content {
-  padding-top: 8px;
-  font-weight: normal;
+  padding: 16px 16px 0 16px;
 }
+
 
 .full-width-select {
   width: 100%;
 }
 
 ::ng-deep nz-form-item {
-  min-height: 85px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
-.group-actions-wrapper {
-  margin-top: 16px;
-  padding-top: 0;
-  text-align: right;
-  border-top: none;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+::ng-deep .ant-form-item-label > label {
+  font-weight: 600;
+  color: #595959;
+  font-size: 13px;
 }
 
+
+::ng-deep .ant-input,
+::ng-deep .ant-select-selector {
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  min-height: 36px; 
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+::ng-deep .ant-input:focus,
+::ng-deep .ant-select-selector:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* ================= ACTIONS ================= */
 .root-actions-wrapper {
-  margin-top: 16px;
+  position: relative; 
+  margin-top: 32px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  padding: 16px 24px;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 8px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  
+  z-index: 1;
 }
 
-.action-btn {
-  border-radius: 6px;
-  transition: background-color 0.3s, transform 0.2s;
+.root-actions-wrapper button:first-child {
+  margin-right: auto;
+  border-color: #d9d9d9;
+  color: #595959;
 }
 
-.action-btn:hover {
+.root-actions-wrapper button {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.root-actions-wrapper button:last-child {
   background: #1890ff;
+  border-color: #1890ff;
   color: #fff;
-  transform: translateY(-1px);
+}
+
+.root-actions-wrapper button:last-child:hover {
+  background: #40a9ff;
+  border-color: #40a9ff;
 }
 
 
 @media (max-width: 991px) {
   .group-col {
     margin-bottom: 16px;
+    padding: 16px;
   }
-}
-
-::ng-deep .ant-form-item-label > label {
-  font-weight: 500;
-  color: #333;
-}
-
-::ng-deep .ant-input,
-::ng-deep .ant-select-selector {
-  border-radius: 6px;
-  border: 1px solid #d9d9d9;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-::ng-deep .ant-input:focus,
-::ng-deep .ant-select-selector:focus {
-  border-color: #40a9ff;
-  box-shadow: 0 0 0 2px rgba(24,144,255,0.2);
+  .root-actions-wrapper {
+    padding: 12px 16px;
+    margin-top: 20px;
+  }
 }

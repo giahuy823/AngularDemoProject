@@ -43,6 +43,7 @@ export class AppDynamicComponent implements OnInit, OnChanges {
       if (g.fields) {
         for (const f of g.fields) {
           this.allFieldsCached.push(f);
+    
           this.controlPathMap[f.key] = `${gKey}.${f.key}`;
           this.fieldMap[f.key] = f;
         }

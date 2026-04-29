@@ -8,12 +8,9 @@
   <div nz-row [nzGutter]="[16, 16]">
 
     <ng-container *ngFor="let group of configRoot.groups">
-
       <div nz-col [nzSpan]="24" class="group-col">
-
+        <div class="group-section-title" *ngIf="group.title">{{ group.title }}</div>
         <div class="dynamic-group-section">
-          <h3 class="group-section-title">{{ group.title }}</h3>
-
           <!-- GROUP FORM -->
           <div [formGroupName]="toKey(group.title)">
 
@@ -25,73 +22,43 @@
                 <div nz-col [nzSpan]="field.colSpan || 24" *ngIf="field.visible">
 
                   <nz-form-item>
-
-                    <nz-form-label [nzRequired]="getRequiredValidator(field)">
+                    <nz-form-label [nzRequired]="getRequiredValidator(field)" [attr.for]="field.key">
                       {{ field.label }}
                     </nz-form-label>
-
-                    <nz-form-control
-                      [nzErrorTip]="(getControl(group, field.key)?.touched || getControl(group, field.key)?.dirty) 
+                    <nz-form-control [nzErrorTip]="(getControl(group, field.key)?.touched || getControl(group, field.key)?.dirty) 
                         ? getErrorMessage(getControl(group, field.key)) : ''">
-
                       <!-- INPUT -->
-                      <input
-                        *ngIf="field.type === 'input'"
-                        nz-input
-                        [formControlName]="field.key"
-                        [placeholder]="field.placeholder"
-                      />
+                      <input *ngIf="field.type === 'input'" nz-input [formControlName]="field.key"
+                        [placeholder]="field.placeholder" />
 
                       <!-- NUMBER -->
-                      <input
-                        *ngIf="field.type === 'number'"
-                        nz-input
-                        type="number"
-                        [formControlName]="field.key"
-                      />
+                      <input *ngIf="field.type === 'number'" nz-input type="number" [formControlName]="field.key" />
 
                       <!-- DATE -->
-                      <input
-                        *ngIf="field.type === 'date'"
-                        nz-input
-                        type="date"
-                        [formControlName]="field.key"
-                      />
+                      <input *ngIf="field.type === 'date'" nz-input type="date" [formControlName]="field.key" />
 
                       <!-- TIME RANGE -->
-                      <nz-time-picker
-                        *ngIf="field.type === 'timeRange'"
-                        [formControlName]="field.key"
-                        nzShowTime>
+                      <nz-time-picker *ngIf="field.type === 'timeRange'" [formControlName]="field.key" nzShowTime>
                       </nz-time-picker>
 
                       <!-- SELECT -->
-                      <nz-select
-                        *ngIf="field.type === 'select'"
-                        [formControlName]="field.key"
-                        [nzPlaceHolder]="field.placeholder"
-                        [nzLoading]="field.loading"
-                        (nzOpenChange)="onSelectOpen(field)"
-                        nzAllowClear
-                        nzShowSearch>
+                      <nz-select *ngIf="field.type === 'select'" [formControlName]="field.key"
+                        [nzPlaceHolder]="field.placeholder" [nzLoading]="field.loading"
+                        (nzOpenChange)="onSelectOpen(field)" nzAllowClear nzShowSearch>
 
-                        <nz-option
-                          *ngFor="let opt of field.options"
-                          [nzLabel]="opt.label"
-                          [nzValue]="opt.value">
+                        <nz-option *ngFor="let opt of field.options" [nzLabel]="opt.label" [nzValue]="opt.value">
                         </nz-option>
 
                       </nz-select>
 
                       <!-- UPLOAD -->
-                       <nz-upload
-                       *ngIf="field.type === 'upload'"
-                       nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76">
-                         <button nz-button nzType="primary" nzGhost type="button">
-                           <span nz-icon nzType="upload"></span>Upload
-                         </button>
-                       </nz-upload>
-                  
+                      <nz-upload *ngIf="field.type === 'upload'"
+                        nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+                        <button nz-button nzType="primary" nzGhost type="button">
+                          <span nz-icon nzType="upload"></span>Upload
+                        </button>
+                      </nz-upload>
+
 
                     </nz-form-control>
 
@@ -107,96 +74,67 @@
             <ng-container *ngFor="let sg of group.subgroups">
 
               <nz-collapse *ngIf="sg" [nzBordered]="false" class="subgroup-collapse">
-                <nz-collapse-panel 
-                  [nzHeader]="sg.title" 
-                  [nzActive]="sg.active !== false"
-                  (nzActiveChange)="sg.active = $event"
-                  class="subgroup-panel">
+                <nz-collapse-panel [nzHeader]="sg.title" [nzActive]="sg.active !== false"
+                  (nzActiveChange)="sg.active = $event" class="subgroup-panel">
 
-                <div [formGroupName]="toKey(sg.title)" class="subgroup-content">
+                  <div [formGroupName]="toKey(sg.title)" class="subgroup-content">
 
-                  <div nz-row [nzGutter]="16">
+                    <div nz-row [nzGutter]="16">
 
-                    <ng-container *ngFor="let field of sg.fields">
+                      <ng-container *ngFor="let field of sg.fields">
 
-                      <div nz-col [nzSpan]="field.colSpan || 24" *ngIf="field.visible">
+                        <div nz-col [nzSpan]="field.colSpan || 24" *ngIf="field.visible">
 
-                        <nz-form-item>
+                          <nz-form-item>
 
-                          <nz-form-label [nzRequired]="getRequiredValidator(field)">
-                            {{ field.label }}
-                          </nz-form-label>
+                            <nz-form-label [nzRequired]="getRequiredValidator(field)">
+                              {{ field.label }}
+                            </nz-form-label>
 
-                          <nz-form-control
-                            [nzErrorTip]="(getControl(group, field.key, sg)?.touched || getControl(group, field.key, sg)?.dirty) 
+                            <nz-form-control [nzErrorTip]="(getControl(group, field.key, sg)?.touched || getControl(group, field.key, sg)?.dirty) 
                               ? getErrorMessage(getControl(group, field.key, sg)) : ''">
 
-                            <!-- INPUT -->
-                            <input
-                              *ngIf="field.type === 'input'"
-                              nz-input
-                              [formControlName]="field.key"
-                            />
+                              <!-- INPUT -->
+                              <input *ngIf="field.type === 'input'" nz-input [formControlName]="field.key" />
 
-                            <!-- NUMBER -->
-                            <input
-                              *ngIf="field.type === 'number'"
-                              nz-input
-                              type="number"
-                              [formControlName]="field.key"
-                            />
+                              <!-- NUMBER -->
+                              <input *ngIf="field.type === 'number'" nz-input type="number"
+                                [formControlName]="field.key" />
 
-                            <!-- DATE -->
-                            <input
-                              *ngIf="field.type === 'date'"
-                              nz-input
-                              type="date"
-                              [formControlName]="field.key"
-                            />
+                              <!-- DATE -->
+                              <input *ngIf="field.type === 'date'" nz-input type="date" [formControlName]="field.key" />
 
-                          <nz-range-picker
-                              *ngIf="field.type === 'timeRange'"
-                              [formControlName]="field.key"
-                              nzShowTime
-                             >
-                            </nz-range-picker>
+                              <nz-range-picker *ngIf="field.type === 'timeRange'" [formControlName]="field.key"
+                                nzShowTime>
+                              </nz-range-picker>
 
-                            <!-- SELECT -->
-                            <nz-select
-                              *ngIf="field.type === 'select'"
-                              [formControlName]="field.key"
-                              [nzPlaceHolder]="field.placeholder"
-                              [nzLoading]="field.loading"
-                              (nzOpenChange)="onSelectOpen(field)"
-                              nzShowSearch
-                              nzAllowClear>
-                              <nz-option
-                                *ngFor="let opt of field.options"
-                                [nzLabel]="opt.label"
-                                [nzValue]="opt.value">
-                              </nz-option>
-                            </nz-select>
+                              <!-- SELECT -->
+                              <nz-select *ngIf="field.type === 'select'" [formControlName]="field.key"
+                                [nzPlaceHolder]="field.placeholder" [nzLoading]="field.loading"
+                                (nzOpenChange)="onSelectOpen(field)" nzShowSearch nzAllowClear>
+                                <nz-option *ngFor="let opt of field.options" [nzLabel]="opt.label"
+                                  [nzValue]="opt.value">
+                                </nz-option>
+                              </nz-select>
 
-                            <nz-upload
-                             *ngIf="field.type === 'upload'"
-                             nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                             >
-                              <button nz-button nzType="primary" nzGhost type="button">
-                                <span nz-icon nzType="upload"></span>Upload
-                              </button>
-                            </nz-upload>
+                              <nz-upload *ngIf="field.type === 'upload'"
+                                nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76">
+                                <button nz-button nzType="primary" nzGhost type="button">
+                                  <span nz-icon nzType="upload"></span>Upload
+                                </button>
+                              </nz-upload>
 
-                          </nz-form-control>
+                            </nz-form-control>
 
-                        </nz-form-item>
+                          </nz-form-item>
 
-                      </div>
+                        </div>
 
-                    </ng-container>
+                      </ng-container>
+
+                    </div>
 
                   </div>
-
-                </div>
 
                 </nz-collapse-panel>
               </nz-collapse>
@@ -207,10 +145,7 @@
 
           <!-- ================= GROUP ACTION ================= -->
           <div class="group-actions-wrapper">
-            <button
-              *ngFor="let action of group.groupActions"
-              nz-button
-              [nzType]="action.style || 'default'"
+            <button *ngFor="let action of group.groupActions" nz-button [nzType]="action.style || 'default'"
               (click)="onGroupAction(action, group)">
               <span *ngIf="action.icon" nz-icon [nzType]="action.icon"></span>
               {{ action.label }}
@@ -220,7 +155,6 @@
         </div>
 
       </div>
-
     </ng-container>
 
     <div nz-col [nzSpan]="24">
